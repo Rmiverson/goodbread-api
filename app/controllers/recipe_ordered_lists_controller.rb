@@ -1,2 +1,0 @@
-class RecipeOrderedListsController < ApplicationController
-end

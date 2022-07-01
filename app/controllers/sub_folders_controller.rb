@@ -1,0 +1,2 @@
+class SubFoldersController < ApplicationController
+end

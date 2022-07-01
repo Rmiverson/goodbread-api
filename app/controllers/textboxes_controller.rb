@@ -1,0 +1,2 @@
+class TextboxesController < ApplicationController
+end

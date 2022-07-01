@@ -1,0 +1,2 @@
+class Textbox < ApplicationRecord
+end

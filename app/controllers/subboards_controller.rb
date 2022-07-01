@@ -1,2 +1,0 @@
-class SubboardsController < ApplicationController
-end
