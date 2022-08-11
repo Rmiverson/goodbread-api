@@ -2,6 +2,8 @@ class RecipesController < ApplicationController
     def create
         recipe = Recipe.create(recipe_params)
         
+        Recipe.createComponents(recipe_params.components)
+
         if recipe.valid?
             render json: RecipeSerializer.new(recipe).serialized_json
         else
@@ -34,8 +36,6 @@ class RecipesController < ApplicationController
         recipe.destroy
         render json: {message: "Recipe successfully deleted"}, status: 200
     end
-
-
 
     private
 

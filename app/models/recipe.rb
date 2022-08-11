@@ -9,4 +9,17 @@ class Recipe < ApplicationRecord
     has_many :sub_folders, through: :recipe_sub_folder_joins
 
     belongs_to :user
+
+    def self.createComponents(components) {
+        components.each { |component|
+            case component
+            when component.cType === "ol"
+                OrderedList.create(component.title, component.list_items)
+            when component.cType === "ul"
+                UnorderedList.create(component.title, component.list_items)
+            when component.cType === "textbox"
+                Textbox.create(component.title, component.text_content)
+            end
+        }
+    }
 end
