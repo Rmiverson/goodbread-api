@@ -1,15 +1,11 @@
 Rails.application.routes.draw do
-  resources :friendships
-  resources :tags
-  resources :ordered_lists
-  resources :unordered_lists
-  resources :textboxes
-  resources :sub_folders
-  resources :folders
-  resources :users
-  resources :recipes
-  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
-
-  # Defines the root path route ("/")
-  # root "articles#index"
+  resources :tags, only: [:index, :show, :create]
+  resources :sub_folders, only: [:index, :show, :create]
+  resources :folders, only: [:index, :show, :create]
+  resources :users, only: [:index, :show, :create]
+  resources :recipes, only: [:index, :show, :create]
+  
+  post "/signup", to: "users#create"
+  post "/login", to: "auth#create"
+  get "/persist", to: "auth#show"
 end
