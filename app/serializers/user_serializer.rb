@@ -11,8 +11,12 @@ class UserSerializer < ActiveModel::Serializer
         recipes: {
           only: {:id, :title}
         }, 
-        # left off here, try to figure out how to disply folders and their recipes and subfolders
-        # also need to figure out how to create and display recipes with their inputed components
+        folders: {
+          only: {:id, :title}
+        },
+        sub_folders: {
+          only: {:id, :title}
+        }
       }
     }
   end
