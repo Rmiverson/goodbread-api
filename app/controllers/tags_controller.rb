@@ -12,13 +12,13 @@ class TagsController < ApplicationController
     def index
         tags = Tag.all
 
-        render json: TagSerializer.new(tags).serialized_json
+        render json: tags.to_json, status: 200
     end
 
     def show
         tag = Tag.find(params[:id])
 
-        render json: TagSerializer.new(tag).serialized_json
+        render json: tag.to_json, status: 200
     end
 
     def destroy
