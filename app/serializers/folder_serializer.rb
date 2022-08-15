@@ -19,5 +19,7 @@ class FolderSerializer < ActiveModel::Serializer
         }
       }
     }
+
+    @folder.to_json(options)
   end
 end

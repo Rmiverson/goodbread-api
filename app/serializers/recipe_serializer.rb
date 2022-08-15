@@ -22,5 +22,7 @@ class RecipeSerializer < ActiveModel::Serializer
         }
       } 
     }
+
+    @recipe.to_json(options)
   end
 end

@@ -16,5 +16,7 @@ class SubFolderSerializer < ActiveModel::Serializer
         }
       }
     }
+
+    @sub_folder.to_json(options)
   end
 end

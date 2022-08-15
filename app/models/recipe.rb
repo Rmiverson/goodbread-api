@@ -10,16 +10,17 @@ class Recipe < ApplicationRecord
 
     belongs_to :user
 
-    def self.createComponents(components) {
-        components.each { |component|
-            case component
-            when component.cType === "ol"
+    def self.createComponents(components)
+        components.each do |component|
+            if component.cType === ol
                 OrderedList.create(component.title, component.list_items)
-            when component.cType === "ul"
+            elsif component.cType === "ul"
                 UnorderedList.create(component.title, component.list_items)
-            when component.cType === "textbox"
+            elsif component.cType === "textbox"
                 Textbox.create(component.title, component.text_content)
+            else
+                raise Exception.new "Failed to determine recipe component type."
             end
-        }
-    }
+        end
+    end
 end
