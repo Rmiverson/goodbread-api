@@ -14,10 +14,9 @@ class UserSerializer < ActiveModel::Serializer
         folders: {
           only: [:id, :title]
         },
-        # for some reason this is throwing a no method error on 'sub_folders'
-        # sub_folders: {
-        #   only: [:id, :title]
-        # }
+        sub_folders: {
+          only: [:id, :title]
+        }
       },
       except: [:password_digest]
     }
