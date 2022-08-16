@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  # start on validating crud actions on all of these routes
   resources :tags, only: [:index, :show, :create]
   resources :sub_folders, only: [:index, :show, :create]
   resources :folders, only: [:index, :show, :create]

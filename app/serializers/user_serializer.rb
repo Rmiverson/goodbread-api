@@ -18,7 +18,7 @@ class UserSerializer < ActiveModel::Serializer
           only: [:id, :title]
         }
       },
-      except: [:password_digest]
+      except: [:password_digest, :created_at, :updated_at]
     }
 
     @user.to_json(options)
