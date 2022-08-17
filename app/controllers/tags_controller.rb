@@ -21,6 +21,14 @@ class TagsController < ApplicationController
         render json: tag.to_json, status: 200
     end
 
+    def update
+        tag = Tag.find(params[:id])
+
+        tag.update(tag_params)
+
+        render json: tag.to_json, status: 200
+    end
+
     def destroy
         tag = Tag.find(params[:id])
         
