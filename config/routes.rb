@@ -1,18 +1,19 @@
 Rails.application.routes.draw do
   # start on validating crud actions on all of these routes
-  resources :tags, only: [:index, :show, :create]
+  resources :tags, only: [:index, :show, :create] #validated
   resources :sub_folders, only: [:index, :show, :create]
   resources :folders, only: [:index, :show, :create]
   resources :users, only: [:index, :show, :create]
   resources :recipes, only: [:index, :show, :create]
   
+  # auth and user create
   post "/signup", to: "users#create"
   post "/login", to: "auth#create"
   get "/persist", to: "auth#show"
 
-  # users
-  post '/users/:id', to: 'user#update'
-  delete '/users/:id', to: 'user#destroy'
+  # users: validated
+  patch '/users', to: 'users#update'
+  delete '/users', to: 'users#destroy'
 
   # recipes
   post '/recipes/:id', to: 'recipe#update'
