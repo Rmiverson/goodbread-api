@@ -9,4 +9,24 @@ Rails.application.routes.draw do
   post "/signup", to: "users#create"
   post "/login", to: "auth#create"
   get "/persist", to: "auth#show"
+
+  # users
+  post '/users/:id', to: 'user#update'
+  delete '/users/:id', to: 'user#destroy'
+
+  # recipes
+  post '/recipes/:id', to: 'recipe#update'
+  delete '/recipes/:id', to: 'recipe#destroy'
+
+  # folder
+  post '/folder/:id', to: 'folder#update'
+  delete '/folder/:id', to: 'folder#destroy'
+
+  # sub_folders
+  post '/sub_folders/:id', to: 'sub_folder#update'
+  delete '/sub_folders/:id', to: 'sub_folder#destroy'
+
+  # tags
+  post '/tags/:id', to: 'tag#update'
+  delete '/tags/:id', to: 'tag#destroy'
 end
