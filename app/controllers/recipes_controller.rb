@@ -2,12 +2,12 @@ class RecipesController < ApplicationController
     def create
         recipe = Recipe.create(recipe_params)
         
-        Recipe.createComponents(recipe_params.components)
+        Recipe.createComponents(recipe_params[:components])
 
         if recipe.valid?
             render json: RecipeSerializer.new(recipe).serialized_json
         else
-            render json: { error: "Invalid inputs"}, status: => 422
+            render json: { error: "Invalid inputs", status: 422}, status: 422
         end
     end
 
@@ -40,6 +40,7 @@ class RecipesController < ApplicationController
     private
 
     def recipe_params
-        params.require(:recipe)
+        hash = params.permit(:user_id, :title, :description, :components)
+        hash
     end
 end

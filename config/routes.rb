@@ -6,7 +6,7 @@ Rails.application.routes.draw do
   resources :users, only: [:index, :show, :create]
   resources :recipes, only: [:index, :show, :create]
   
-  # auth and user create
+  # auth and user create: signup and  login validated
   post "/signup", to: "users#create"
   post "/login", to: "auth#create"
   get "/persist", to: "auth#show"
@@ -15,7 +15,7 @@ Rails.application.routes.draw do
   patch '/users', to: 'users#update'
   delete '/users', to: 'users#destroy'
 
-  # recipes
+  # recipes: create validated
   post '/recipes/:id', to: 'recipe#update'
   delete '/recipes/:id', to: 'recipe#destroy'
 
