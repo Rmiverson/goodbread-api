@@ -20,7 +20,8 @@ class RecipeSerializer < ActiveModel::Serializer
         textboxes: {
           only: [:id, :title, :text_content]
         }
-      } 
+      },
+      except: [:created_at, :updated_at]
     }
 
     @recipe.to_json(options)

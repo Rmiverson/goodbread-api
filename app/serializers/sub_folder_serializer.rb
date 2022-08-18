@@ -8,13 +8,11 @@ class SubFolderSerializer < ActiveModel::Serializer
   def serialized_json
     options = {
       include: {
-        user: {
-          only: [:id, :username]
-        },
         recipe: {
           only: [:id, :title]
         }
-      }
+      },
+      except: [:created_at, :updated_at]
     }
 
     @sub_folder.to_json(options)

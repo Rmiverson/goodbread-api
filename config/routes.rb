@@ -12,22 +12,22 @@ Rails.application.routes.draw do
   get "/persist", to: "auth#show"
 
   # users: validated
-  patch '/users', to: 'users#update'
-  delete '/users', to: 'users#destroy'
+  patch '/users/:id', to: 'users#update'
+  delete '/users/:id', to: 'users#destroy'
 
-  # recipes: create validated
-  post '/recipes/:id', to: 'recipe#update'
-  delete '/recipes/:id', to: 'recipe#destroy'
+  # recipes: validated
+  patch '/recipes/:id', to: 'recipes#update'
+  delete '/recipes/:id', to: 'recipes#destroy'
 
   # folder
-  post '/folder/:id', to: 'folder#update'
+  patch '/folder/:id', to: 'folder#update'
   delete '/folder/:id', to: 'folder#destroy'
 
   # sub_folders
-  post '/sub_folders/:id', to: 'sub_folder#update'
+  patch '/sub_folders/:id', to: 'sub_folder#update'
   delete '/sub_folders/:id', to: 'sub_folder#destroy'
 
   # tags
-  post '/tags/:id', to: 'tag#update'
+  patch '/tags/:id', to: 'tag#update'
   delete '/tags/:id', to: 'tag#destroy'
 end
