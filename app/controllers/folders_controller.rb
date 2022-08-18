@@ -4,9 +4,9 @@ class FoldersController < ApplicationController
         
         if folder.valid?
             render json: FolderSerializer.new(folder).serialized_json
-            render json: {message: "Folder created successfully"}, status: 200
+            render json: { message: "Folder created successfully", status: 200 }, status: 200
         else
-            render json: {message: "Failed to create folder, invalid inputs"}, status: 422 
+            render json: { message: "Failed to create folder, invalid inputs", status: 422 }, status: 422 
         end
     end
 
@@ -35,6 +35,6 @@ class FoldersController < ApplicationController
     private
     
     def folder_params
-        params.require(:folder).permit(:user_id, :title, :description)
+        params.permit(:user_id, :title, :description)
     end
 end

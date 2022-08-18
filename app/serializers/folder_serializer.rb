@@ -1,17 +1,17 @@
 class FolderSerializer < ActiveModel::Serializer
   attributes :id
 
-  def initialize (folder)
+  def initialize(folder)
     @folder = folder
   end
 
   def serialized_json
     options = {
       include: {
-        recipe: {
+        recipes: {
           only: [:id, :title]
         },
-        sub_folder: {
+        sub_folders: { #left off here, error: could not find recipe_folder_join association
           only: [:id, :title]
         }
       },
