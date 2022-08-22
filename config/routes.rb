@@ -19,7 +19,7 @@ Rails.application.routes.draw do
   patch '/recipes/:id', to: 'recipes#update'
   delete '/recipes/:id', to: 'recipes#destroy'
 
-  # folder
+  # folder: create validated
   patch '/folder/:id', to: 'folder#update'
   delete '/folder/:id', to: 'folder#destroy'
 

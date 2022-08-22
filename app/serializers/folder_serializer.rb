@@ -11,7 +11,7 @@ class FolderSerializer < ActiveModel::Serializer
         recipes: {
           only: [:id, :title]
         },
-        sub_folders: { #left off here, error: could not find recipe_folder_join association
+        sub_folders: {
           only: [:id, :title]
         }
       },
