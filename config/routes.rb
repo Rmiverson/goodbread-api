@@ -1,10 +1,10 @@
 Rails.application.routes.draw do
   # start on validating crud actions on all of these routes
   resources :tags, only: [:index, :show, :create] #validated
-  resources :sub_folders, only: [:index, :show, :create]
-  resources :folders, only: [:index, :show, :create]
-  resources :users, only: [:index, :show, :create]
-  resources :recipes, only: [:index, :show, :create]
+  resources :sub_folders, only: [:show, :create] #validated
+  resources :folders, only: [:show, :create] #validated
+  resources :users, only: [:index, :show, :create] #validated
+  resources :recipes, only: [:index, :show, :create] #validated
   
   # auth and user create: signup and  login validated
   post "/signup", to: "users#create"
@@ -19,18 +19,18 @@ Rails.application.routes.draw do
   patch '/recipes/:id', to: 'recipes#update'
   delete '/recipes/:id', to: 'recipes#destroy'
 
-  # folder: create validated
+  # folder: validated
   patch '/folders/:id', to: 'folders#update'
   delete '/folders/:id', to: 'folders#destroy'
 
-  # sub_folders
+  # sub_folders: validated
   patch '/sub_folders/:id', to: 'sub_folders#update'
   delete '/sub_folders/:id', to: 'sub_folders#destroy'
 
-  # tags
+  # tags: validated
   patch '/tags/:id', to: 'tags#update'
   delete '/tags/:id', to: 'tags#destroy'
 
   # need routes to connect recipes to folders/sub-folders
-
+  # validate recipe component creations
 end

@@ -14,6 +14,9 @@ class Recipe < ApplicationRecord
     has_many :recipe_sub_folder_joins
     has_many :sub_folders, through: :recipe_sub_folder_joins
 
+    has_many :tag_recipe_joins
+    has_many :tags, through: :tag_recipe_joins
+
     belongs_to :user
 
     def self.createComponents(components)

@@ -8,7 +8,7 @@ class SubFolderSerializer < ActiveModel::Serializer
   def serialized_json
     options = {
       include: {
-        recipe: {
+        recipes: {
           only: [:id, :title]
         }
       },

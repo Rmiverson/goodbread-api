@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_07_01_214417) do
+ActiveRecord::Schema[7.0].define(version: 2022_08_23_183901) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -69,12 +69,19 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_01_214417) do
     t.index ["folder_id"], name: "index_sub_folders_on_folder_id"
   end
 
+  create_table "tag_recipe_joins", force: :cascade do |t|
+    t.bigint "recipe_id"
+    t.bigint "tag_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["recipe_id"], name: "index_tag_recipe_joins_on_recipe_id"
+    t.index ["tag_id"], name: "index_tag_recipe_joins_on_tag_id"
+  end
+
   create_table "tags", force: :cascade do |t|
-    t.bigint "recipe_id", null: false
     t.string "label"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["recipe_id"], name: "index_tags_on_recipe_id"
   end
 
   create_table "textboxes", force: :cascade do |t|
@@ -115,7 +122,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_01_214417) do
   add_foreign_key "recipe_sub_folder_joins", "sub_folders"
   add_foreign_key "recipes", "users"
   add_foreign_key "sub_folders", "folders"
-  add_foreign_key "tags", "recipes"
+  add_foreign_key "tag_recipe_joins", "recipes"
+  add_foreign_key "tag_recipe_joins", "tags"
   add_foreign_key "textboxes", "recipes"
   add_foreign_key "unordered_lists", "recipes"
 end

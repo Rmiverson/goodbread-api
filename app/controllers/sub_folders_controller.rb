@@ -2,10 +2,10 @@ class SubFoldersController < ApplicationController
     def create
         sub_folder = SubFolder.create(sub_folder_params)
         
-        if folder.valid?
-            render json: FolderSerializer.new(sub_folder).serialized_json
+        if sub_folder.valid?
+            render json: SubFolderSerializer.new(sub_folder).serialized_json
         else
-            render json: {message: "Failed to create sub_folder, invalid inputs"}, status: 422 
+            render json: {message: "Failed to create sub-folder, invalid inputs"}, status: 422 
         end
     end
 
@@ -20,7 +20,7 @@ class SubFoldersController < ApplicationController
 
         sub_folder.update(sub_folder_params)
 
-        render json: SubFolderSerializer.new(folder).serialized_json
+        render json: SubFolderSerializer.new(sub_folder).serialized_json
     end
 
     def destroy
@@ -28,12 +28,12 @@ class SubFoldersController < ApplicationController
 
         sub_folder.destroy
 
-        render json: {message: "Sub_Folder successfully deleted"}, status: 200
+        render json: {message: "Sub-Folder successfully deleted"}, status: 200
     end
 
     private
     
     def sub_folder_params
-        params.permit(:id, :user_id, :title, :description)
+        params.permit(:id, :folder_id, :title, :description)
     end
 end
