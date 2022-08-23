@@ -40,6 +40,6 @@ class TagsController < ApplicationController
     private
 
     def tag_params
-        params.require(:tag).permit(:label)
+        params.permit(:id, :label)
     end
 end

@@ -34,6 +34,6 @@ class SubFoldersController < ApplicationController
     private
     
     def sub_folder_params
-        params.require(:sub_folder).permit(:user_id, :title, :description)
+        params.permit(:id, :user_id, :title, :description)
     end
 end

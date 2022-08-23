@@ -20,14 +20,17 @@ Rails.application.routes.draw do
   delete '/recipes/:id', to: 'recipes#destroy'
 
   # folder: create validated
-  patch '/folder/:id', to: 'folder#update'
-  delete '/folder/:id', to: 'folder#destroy'
+  patch '/folders/:id', to: 'folders#update'
+  delete '/folders/:id', to: 'folders#destroy'
 
   # sub_folders
-  patch '/sub_folders/:id', to: 'sub_folder#update'
-  delete '/sub_folders/:id', to: 'sub_folder#destroy'
+  patch '/sub_folders/:id', to: 'sub_folders#update'
+  delete '/sub_folders/:id', to: 'sub_folders#destroy'
 
   # tags
-  patch '/tags/:id', to: 'tag#update'
-  delete '/tags/:id', to: 'tag#destroy'
+  patch '/tags/:id', to: 'tags#update'
+  delete '/tags/:id', to: 'tags#destroy'
+
+  # need routes to connect recipes to folders/sub-folders
+
 end
