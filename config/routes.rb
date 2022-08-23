@@ -32,5 +32,6 @@ Rails.application.routes.draw do
   delete '/tags/:id', to: 'tags#destroy'
 
   # need routes to connect recipes to folders/sub-folders
+  # need routes to connect recipes to tags
   # validate recipe component creations
 end
