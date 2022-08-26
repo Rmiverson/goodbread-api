@@ -5,7 +5,7 @@ Rails.application.routes.draw do
   resources :folders, only: [:show, :create] #validated
   resources :users, only: [:index, :show, :create] #validated
   resources :recipes, only: [:index, :show, :create] #validated
-  resources :recipe_folder_joins, only: [:create]
+  resources :recipe_folder_joins, only: [:create] #validated
   resources :recipe_sub_folder_joins, only: [:create]
   
   # auth and user create: signup and  login validated
@@ -29,7 +29,7 @@ Rails.application.routes.draw do
   patch '/sub_folders/:id', to: 'sub_folders#update'
   delete '/sub_folders/:id', to: 'sub_folders#destroy'
 
-  # recipe_folders
+  # recipe_folders: validated
   get '/recipe_folder_joins', to: 'recipe_folder_joins#find_by'
   delete '/recipe_folder_joins/:id', to: 'recipe_folder_joins#destroy'
 
@@ -40,7 +40,7 @@ Rails.application.routes.draw do
   patch '/tags/:id', to: 'tags#update'
   delete '/tags/:id', to: 'tags#destroy'
 
-  # need routes to connect recipes to folders/sub-folders
   # need routes to connect recipes to tags
   # validate recipe component creations
+  # add validation in models
 end
