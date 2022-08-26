@@ -30,6 +30,7 @@ Rails.application.routes.draw do
   delete '/sub_folders/:id', to: 'sub_folders#destroy'
 
   # recipe_folders
+  get '/recipe_folder_joins', to: 'recipe_folder_joins#find_by'
   delete '/recipe_folder_joins/:id', to: 'recipe_folder_joins#destroy'
 
   # recipe_sub_folders

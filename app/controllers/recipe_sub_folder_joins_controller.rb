@@ -9,10 +9,20 @@ class RecipeFolderJoinsController < ApplicationController
         end
     end
 
+    def find_id
+        recipe_sub_folder_join = RecipeSubFolderJoin.find_by(sub_folder_id: join_params[:sub_folder_id], recipe_id: join_params[:recipe_id])
+
+        if recipe_sub_folder_join.valid?
+            render json: { message: "Recipe sub-folder join could not be found."}, status: 404
+        else
+            render json:recipe_sub_folder_join.to_json, status: 200
+        end
+    end
+
     def destroy
         recipe_sub_folder_join = RecipeSubFolderJoin.find(params[:id])
 
-        recipe_folder_join.destroy
+        recipe_sub_folder_join.destroy
 
         render json: { message: "Join successfully deleted."}, status: 200
     end
@@ -20,6 +30,6 @@ class RecipeFolderJoinsController < ApplicationController
     private
     
     def join_params
-        params.permit(:id, :recipe_id, :folder_id)
+        params.permit(:id, :recipe_id, :sub_folder_id)
     end
 end
