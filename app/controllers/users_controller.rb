@@ -10,7 +10,7 @@ class UsersController < ApplicationController
             token = encode_token({user_id: user.id})
             render json: UserSerializer.new(user).serialized_json(token)
         else
-            render json: { error: "Invalid inputs", status: 422}, status: 422
+            render json: { error: "Invalid inputs"}, status: 422
         end
     end
 

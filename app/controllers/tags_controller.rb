@@ -3,7 +3,7 @@ class TagsController < ApplicationController
         tag = Tag.create(tag_params)
 
         if tag.valid?
-            render json: {message: "Tag successfully created."}, status: 200
+            render json: {message: "Tag successfully created."}, status: 201
         else
             render json: {message: "Failed to create tag, invalid inputs."}, status: 422
         end

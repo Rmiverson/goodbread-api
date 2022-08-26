@@ -7,7 +7,7 @@ class AuthController < ApplicationController
          
          if user && user.authenticate(params[:password])
             my_token = encode_token({user_id: user.id})
-            render json: UserSerializer.new(user).serialized_json(my_token), status: 200
+            render json: UserSerializer.new(user).serialized_json(my_token), status: 201
          else
             render json: {error: 'That user could not be found'}, status: 401
          end
