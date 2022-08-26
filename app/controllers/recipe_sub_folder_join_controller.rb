@@ -1,0 +1,3 @@
+class RecipeFolderJoinController < ApplicationController
+    
+end

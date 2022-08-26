@@ -5,6 +5,8 @@ Rails.application.routes.draw do
   resources :folders, only: [:show, :create] #validated
   resources :users, only: [:index, :show, :create] #validated
   resources :recipes, only: [:index, :show, :create] #validated
+  resources :recipe_folders, only: [:create]
+  resources :recipe_sub_folders, only: [:create]
   
   # auth and user create: signup and  login validated
   post "/signup", to: "users#create"
@@ -22,10 +24,17 @@ Rails.application.routes.draw do
   # folder: validated
   patch '/folders/:id', to: 'folders#update'
   delete '/folders/:id', to: 'folders#destroy'
+  post '/folders/:id/add_recipe'
 
   # sub_folders: validated
   patch '/sub_folders/:id', to: 'sub_folders#update'
   delete '/sub_folders/:id', to: 'sub_folders#destroy'
+
+  # recipe_folders
+  delete '/recipe_folders/:id', to: 'recipe_folders#destroy'
+
+  # recipe_sub_folders
+  delete '/recipe_sub_folders/:id', to: 'recipe_sub_folders#destroy'
 
   # tags: validated
   patch '/tags/:id', to: 'tags#update'

@@ -5,7 +5,7 @@ class FoldersController < ApplicationController
         if folder.valid?
             render json: FolderSerializer.new(folder).serialized_json
         else
-            render json: { message: "Failed to create folder, invalid inputs", status: 422 }, status: 422 
+            render json: { message: "Failed to create folder, invalid inputs"}, status: 422 
         end
     end
 
