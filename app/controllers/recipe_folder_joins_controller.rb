@@ -10,12 +10,12 @@ class RecipeFolderJoinsController < ApplicationController
     end
 
     def find_by
-        recipe_folder_join = RecipeFolderJoin.find_by(folder_id: join_params[:folder_id], recipe_id: join_params[:recipe_id])
+        recipe_folder_join = RecipeFolderJoin.find_by folder_id: join_params[:folder_id], recipe_id: join_params[:recipe_id]
         
-        if recipe_folder_join.valid?
-            render json:recipe_folder_join.to_json, status: 200
-        else
+        if recipe_folder_join.nil?
             render json: { message: "Recipe folder join could not be found."}, status: 404
+        else
+            render json:recipe_folder_join.to_json, status: 200
         end
     end
 
