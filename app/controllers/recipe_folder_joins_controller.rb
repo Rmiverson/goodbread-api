@@ -1,4 +1,4 @@
-class RecipeFolderJoinController < ApplicationController
+class RecipeFolderJoinsController < ApplicationController
     def create
         recipe_folder_join = RecipeFolderJoin.create(join_params)
 
@@ -20,6 +20,6 @@ class RecipeFolderJoinController < ApplicationController
     private
 
     def join_params
-        params.permit(:id, :recipe_id, :folder_id)
+        params.permit(:id, :folder_id, :recipe_id)
     end
 end

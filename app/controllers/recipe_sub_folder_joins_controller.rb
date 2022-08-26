@@ -1,4 +1,4 @@
-class RecipeFolderJoinController < ApplicationController
+class RecipeFolderJoinsController < ApplicationController
     def create
         recipe_sub_folder_join = RecipeSubFolderJoin.create(join_params)
 

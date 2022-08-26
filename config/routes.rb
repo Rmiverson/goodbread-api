@@ -24,17 +24,16 @@ Rails.application.routes.draw do
   # folder: validated
   patch '/folders/:id', to: 'folders#update'
   delete '/folders/:id', to: 'folders#destroy'
-  post '/folders/:id/add_recipe'
 
   # sub_folders: validated
   patch '/sub_folders/:id', to: 'sub_folders#update'
   delete '/sub_folders/:id', to: 'sub_folders#destroy'
 
   # recipe_folders
-  delete '/recipe_folders/:id', to: 'recipe_folder_joins#destroy'
+  delete '/recipe_folder_joins/:id', to: 'recipe_folder_joins#destroy'
 
   # recipe_sub_folders
-  delete '/recipe_sub_folders/:id', to: 'recipe_sub_folder_joins#destroy'
+  delete '/recipe_sub_folder_joins/:id', to: 'recipe_sub_folder_joins#destroy'
 
   # tags: validated
   patch '/tags/:id', to: 'tags#update'
