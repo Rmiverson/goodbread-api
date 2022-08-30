@@ -1,4 +1,4 @@
-class RecipeFolderJoinsController < ApplicationController
+class RecipeSubFolderJoinsController < ApplicationController
     def create
         recipe_sub_folder_join = RecipeSubFolderJoin.create(join_params)
 
@@ -9,7 +9,7 @@ class RecipeFolderJoinsController < ApplicationController
         end
     end
 
-    def find_id
+    def find_by
         recipe_sub_folder_join = RecipeSubFolderJoin.find_by sub_folder_id: join_params[:sub_folder_id], recipe_id: join_params[:recipe_id]
 
         if recipe_sub_folder_join.nil?

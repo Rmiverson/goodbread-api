@@ -6,7 +6,7 @@ Rails.application.routes.draw do
   resources :users, only: [:index, :show, :create] #validated
   resources :recipes, only: [:index, :show, :create] #validated
   resources :recipe_folder_joins, only: [:create] #validated
-  resources :recipe_sub_folder_joins, only: [:create]
+  resources :recipe_sub_folder_joins, only: [:create] #validated
   
   # auth and user create: signup and  login validated
   post "/signup", to: "users#create"
@@ -33,7 +33,8 @@ Rails.application.routes.draw do
   get '/recipe_folder_joins', to: 'recipe_folder_joins#find_by'
   delete '/recipe_folder_joins/:id', to: 'recipe_folder_joins#destroy'
 
-  # recipe_sub_folders
+  # recipe_sub_folders: validated
+  get '/recipe_sub_folder_joins', to: 'recipe_sub_folder_joins#find_by'
   delete '/recipe_sub_folder_joins/:id', to: 'recipe_sub_folder_joins#destroy'
 
   # tags: validated

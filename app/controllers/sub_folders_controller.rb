@@ -1,7 +1,7 @@
 class SubFoldersController < ApplicationController
     def create
         sub_folder = SubFolder.create(sub_folder_params)
-        
+
         if sub_folder.valid?
             render json: SubFolderSerializer.new(sub_folder).serialized_json
         else
@@ -34,6 +34,6 @@ class SubFoldersController < ApplicationController
     private
     
     def sub_folder_params
-        params.permit(:id, :folder_id, :title, :description)
+        params.permit(:id, :title, :folder_id, :description)
     end
 end
