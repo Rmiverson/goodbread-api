@@ -7,6 +7,7 @@ Rails.application.routes.draw do
   resources :recipes, only: [:index, :show, :create] #validated
   resources :recipe_folder_joins, only: [:create] #validated
   resources :recipe_sub_folder_joins, only: [:create] #validated
+  resources :tag_recipe_joins, only: [:create] #validated
   
   # auth and user create: signup and  login validated
   post "/signup", to: "users#create"
@@ -40,6 +41,10 @@ Rails.application.routes.draw do
   # tags: validated
   patch '/tags/:id', to: 'tags#update'
   delete '/tags/:id', to: 'tags#destroy'
+
+  # tag_recipe_joins: validated
+  patch '/tag_recipe_joins', to: 'tag_recipe_joins#find_by'
+  delete '/tag_recipe_joins/:id', to: 'tag_recipe_joins#destroy'
 
   # need routes to connect recipes to tags
   # validate recipe component creations
