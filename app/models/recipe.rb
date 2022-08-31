@@ -21,16 +21,17 @@ class Recipe < ApplicationRecord
 
     validates_presence_of :user
 
-    def self.createComponents(components)
+    def self.createComponents(components, recipe_id)
         arr = JSON.parse(components)
+
         if !arr.empty?()
             arr.map do |component|
-                if component.cType === ol
-                    OrderedList.create(component.title, component.list_items)
-                elsif component.cType === "ul"
-                    UnorderedList.create(component.title, component.list_items)
-                elsif component.cType === "textbox"
-                    Textbox.create(component.title, component.text_content)
+                if component["type"] === "ol"
+                    OrderedList.create(recipe_id: recipe_id, title: component["title"], list_items: component["list_items"])
+                elsif component["type"] === "ul"
+                    UnorderedList.create(recipe_id: recipe_id, title: component["title"], list_items: component["list_items"])
+                elsif component["type"] === "textbox"
+                    Textbox.create(recipe_id: recipe_id, title: component["title"], text_content: component["text_content"])
                 else
                     raise Exception.new "Failed to determine recipe component type."
                 end

@@ -1,10 +1,9 @@
 class RecipesController < ApplicationController
     def create
         recipe = Recipe.create(recipe_params)
-        
-        Recipe.createComponents(recipe_params[:components])
 
         if recipe.valid?
+            Recipe.createComponents(recipe_params[:components], recipe[:id])
             render json: RecipeSerializer.new(recipe).serialized_json
         else
             render json: { error: "Invalid inputs", status: 422}, status: 422

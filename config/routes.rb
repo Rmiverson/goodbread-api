@@ -19,6 +19,7 @@ Rails.application.routes.draw do
   delete '/users/:id', to: 'users#destroy'
 
   # recipes: validated
+  # recipe component create read: validated
   patch '/recipes/:id', to: 'recipes#update'
   delete '/recipes/:id', to: 'recipes#destroy'
 
@@ -46,5 +47,5 @@ Rails.application.routes.draw do
   patch '/tag_recipe_joins', to: 'tag_recipe_joins#find_by'
   delete '/tag_recipe_joins/:id', to: 'tag_recipe_joins#destroy'
 
-  # validate recipe component creations
+  # create update and delete methods for recipe components
 end
