@@ -19,6 +19,8 @@ class Recipe < ApplicationRecord
 
     belongs_to :user
 
+    validates_presence_of :user
+
     def self.createComponents(components)
         arr = JSON.parse(components)
         if !arr.empty?()

@@ -46,7 +46,5 @@ Rails.application.routes.draw do
   patch '/tag_recipe_joins', to: 'tag_recipe_joins#find_by'
   delete '/tag_recipe_joins/:id', to: 'tag_recipe_joins#destroy'
 
-  # need routes to connect recipes to tags
   # validate recipe component creations
-  # add validation in models
 end
