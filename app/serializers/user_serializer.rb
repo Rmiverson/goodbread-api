@@ -13,9 +13,6 @@ class UserSerializer < ActiveModel::Serializer
         }, 
         folders: {
           only: [:id, :title]
-        },
-        sub_folders: {
-          only: [:id, :title]
         }
       },
       except: [:password_digest, :created_at, :updated_at]
