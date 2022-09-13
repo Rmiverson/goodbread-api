@@ -1,6 +1,5 @@
 class UsersController < ApplicationController
-    # disabled for testing
-    # skip_before_action :authorized, only: [:create]
+    skip_before_action :authorized, only: [:create]
 
     # signup
     def create
@@ -43,6 +42,6 @@ class UsersController < ApplicationController
     private
     
     def user_params
-        params.permit(:id, :username, :first_name, :last_name, :email, :password, :description)
+        params.require(:user).permit(:id, :username, :first_name, :last_name, :email, :password, :description)
     end
 end

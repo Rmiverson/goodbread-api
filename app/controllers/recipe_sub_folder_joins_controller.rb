@@ -30,6 +30,6 @@ class RecipeSubFolderJoinsController < ApplicationController
     private
     
     def join_params
-        params.permit(:id, :recipe_id, :sub_folder_id)
+        params.require(:recipe_sub_folder_join).permit(:id, :recipe_id, :sub_folder_id)
     end
 end

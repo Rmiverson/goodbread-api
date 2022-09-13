@@ -30,6 +30,6 @@ class TagRecipeJoinsController < ApplicationController
     private
 
     def join_params
-        params.permit(:id, :recipe_id, :tag_id)
+        params.require(:tag_recipe_join).permit(:id, :recipe_id, :tag_id)
     end
 end
