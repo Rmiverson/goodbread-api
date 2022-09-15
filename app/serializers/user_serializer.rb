@@ -17,7 +17,6 @@ class UserSerializer < ActiveModel::Serializer
       },
       except: [:password_digest, :created_at, :updated_at]
     }
-
     data = @user.to_json(options)
     dataToken = JSON.parse(data)
     dataToken["token"] = token

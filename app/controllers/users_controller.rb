@@ -1,15 +1,18 @@
+require './lib/json_web_token'
+
 class UsersController < ApplicationController
-    skip_before_action :authorized, only: [:create]
+    before_action :authorize_request, except: :create
 
     # signup
     def create
         user = User.create(user_params)
 
         if user.valid?
-            token = encode_token({user_id: user.id})
-            render json: UserSerializer.new(user).serialized_json(token)
+            token = JsonWebToken.encode(user_id: @user.id)
+            time = Time.now + 24.hours.to_i
+            render json: UserSerializer.new(user).serialized_json({token: token, exp: time.strftime("%m-%d-%Y %H:%M")})
         else
-            render json: { error: "Invalid inputs"}, status: 422
+            render json: { errors: user.errors.full_messages }, status: :unprocessable_entity
         end
     end
 
@@ -28,7 +31,9 @@ class UsersController < ApplicationController
     def update
         user = User.find(params[:id])
 
-        user.update(user_params)
+        unless user.update(user_params)
+            render json: { errors: user.errors.full_messages }, status: :unprocessable_entity
+        end
 
         render json: UserSerializer.new(user).serialized_json
     end
@@ -40,6 +45,12 @@ class UsersController < ApplicationController
     end
 
     private
+
+    def find_user
+        @user = User.find_by_username!(params[:username])
+        rescue ActiveRecord::RecordNotFound
+            render json: { errors: 'User not found' }, status: :not_found
+    end
     
     def user_params
         params.require(:user).permit(:id, :username, :first_name, :last_name, :email, :password, :description)

@@ -2,14 +2,14 @@ Rails.application.routes.draw do
   resources :tags, only: [:index, :show, :create]
   resources :sub_folders, only: [:show, :create]
   resources :folders, only: [:show, :create]
-  resources :users, only: [:index, :show, :create]
+  resources :users, only: [:index, :show]
   resources :recipes, only: [:index, :show, :create]
   resources :recipe_folder_joins, only: [:create]
   resources :recipe_sub_folder_joins, only: [:create]
   resources :tag_recipe_joins, only: [:create]
 
   post "/signup", to: "users#create"
-  post "/login", to: "auth#create"
+  post "/login", to: "auth#login"
   get "/persist", to: "auth#show"
 
   patch '/users/:id', to: 'users#update'
