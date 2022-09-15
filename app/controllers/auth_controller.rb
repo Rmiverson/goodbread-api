@@ -9,7 +9,8 @@ class AuthController < ApplicationController
       if @user&.authenticate(params[:user][:password])
          token = JsonWebToken.encode(user_id: @user.id)
          time = Time.now + 24.hours.to_i
-         render json: UserSerializer.new(@user).serialized_json({token: token, exp: time.strftime("%m-%d-%Y %H:%M")})
+         time_milli = time.to_f * 1000
+         render json: UserSerializer.new(@user).serialized_json({token: token, exp: time_milli})
       else
          render json: { error: 'unauthorized'}, status: :unauthorized
       end
