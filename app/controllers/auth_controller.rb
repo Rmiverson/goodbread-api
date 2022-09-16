@@ -16,10 +16,6 @@ class AuthController < ApplicationController
       end
    end
 
-   def show
-      render json: UserSerializer.new(@user).serialized_json
-   end
-
    private
 
    def login_params

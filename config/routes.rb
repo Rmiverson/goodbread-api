@@ -10,7 +10,6 @@ Rails.application.routes.draw do
 
   post "/signup", to: "users#create"
   post "/login", to: "auth#login"
-  get "/persist", to: "auth#show"
 
   patch '/users/:id', to: 'users#update'
   delete '/users/:id', to: 'users#destroy'
