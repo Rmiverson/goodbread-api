@@ -8,7 +8,7 @@ class UsersController < ApplicationController
         user = User.create(user_params)
 
         if user.valid?
-            token = JsonWebToken.encode(user_id: @user.id)
+            token = JsonWebToken.encode(user_id: user.id)
             time = Time.now + 24.hours.to_i
             time_milli = time.to_f * 1000
             render json: UserSerializer.new(user).serialized_json({token: token, exp: time_milli}) 
@@ -48,7 +48,7 @@ class UsersController < ApplicationController
     private
 
     def find_user
-        @user = User.find_by_username!(params[:username])
+        user = User.find_by_username!(params[:username])
         rescue ActiveRecord::RecordNotFound
             render json: { errors: 'User not found' }, status: :not_found
     end
