@@ -1,5 +1,5 @@
 class Recipe < ApplicationRecord
-    attr_accessor :components
+    attr_accessor :components, :tag_list
 
     require 'json'
 

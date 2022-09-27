@@ -1,18 +1,16 @@
 class RecipesController < ApplicationController
     def create
-        recipe = Recipe.create(recipe_params)
+        recipe = Recipe.create({user_id: recipe_params[:user_id], title: recipe_params[:title], description: recipe_params[:description]})
 
         if recipe.valid?
-            arr = JSON.parse(recipe_params[:components])
-
-            if !arr.empty?()
-                arr.map do |component|
+            if !recipe_params[:components].empty?()
+                recipe_params[:components].map do |component|
                     if component["type"] === "ol"
-                        OrderedList.create(recipe_id: recipe[:id], title: component["title"], list_items: component["list_items"])
+                        OrderedList.create(recipe_id: recipe[:id], title: component["title"], list_items: component["list_items"], index_order: component["index_order"])
                     elsif component["type"] === "ul"
-                        UnorderedList.create(recipe_id: recipe[:id], title: component["title"], list_items: component["list_items"])
+                        UnorderedList.create(recipe_id: recipe[:id], title: component["title"], list_items: component["list_items"], index_order: component["index_order"])
                     elsif component["type"] === "textbox"
-                        Textbox.create(recipe_id: recipe[:id], title: component["title"], text_content: component["text_content"])
+                        Textbox.create(recipe_id: recipe[:id], title: component["title"], text_content: component["text_content"], index_order: component["index_order"])
                     else
                         raise Exception.new "Failed to determine recipe component type."
                     end
@@ -41,19 +39,18 @@ class RecipesController < ApplicationController
     def update
         recipe = Recipe.find(params[:id])
         recipe.update(recipe_params)
-        arr = JSON.parse(recipe_params[:components])
 
-        if !arr.empty?()
-            arr.map do |componentParameters|
+        if !recipe_params[:components].empty?()
+            recipe_params[:components].map do |componentParameters|
                 if componentParameters["type"] === "ol"
                     component = OrderedList.find(componentParameters["id"])
-                    component.update(title: componentParameters["title"], list_items: componentParameters["list_items"])
+                    component.update(title: componentParameters["title"], list_items: componentParameters["list_items"], index_order: component["index_order"])
                 elsif componentParameters["type"] === "ul"
                     component = UnorderedList.find(componentParameters["id"])
-                    component.update(title: componentParameters["title"], list_items: componentParameters["list_items"])
+                    component.update(title: componentParameters["title"], list_items: componentParameters["list_items"], index_order: component["index_order"])
                 elsif componentParameters["type"] === "textbox"
                     component = Textbox.find(componentParameters["id"])
-                    component.update(title: componentParameters["title"], text_content: componentParameters["text_content"])
+                    component.update(title: componentParameters["title"], text_content: componentParameters["text_content"], index_order: component["index_order"])
                 else
                     raise Exception.new "Failed to determine recipe component type."
                 end                
@@ -74,10 +71,8 @@ class RecipesController < ApplicationController
     def destroyComponents
         recipe = Recipe.find(params[:id])
 
-        arr = JSON.parse(recipe_params[:components])
-
-        if !arr.empty?()
-            arr.map do |componentParameters|
+        if !recipe_params[:components].empty?()
+            recipe_params[:components].map do |componentParameters|
                 if componentParameters["type"] === "ol"
                     component = OrderedList.find(componentParameters["id"])
                     component.destroy
@@ -101,6 +96,19 @@ class RecipesController < ApplicationController
     private
 
     def recipe_params
-        params.require(:recipe).permit(:id, :user_id, :title, :description, :components)
+        params.require(:recipe).permit(
+            :id,
+            :user_id,
+            :title,
+            :description,
+            components: [
+                :type,
+                :title, 
+                :text_content, 
+                :index_order,
+                list_items: []
+            ],
+            tag_list: []
+        )
     end
 end
