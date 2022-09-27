@@ -16,7 +16,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_23_183901) do
 
   create_table "folders", force: :cascade do |t|
     t.bigint "user_id", null: false
-    t.string "title"
+    t.string "title", null: false
     t.text "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -25,8 +25,9 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_23_183901) do
 
   create_table "ordered_lists", force: :cascade do |t|
     t.bigint "recipe_id", null: false
-    t.string "title"
+    t.string "title", null: false
     t.string "list_items", array: true
+    t.integer "index_order", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["recipe_id"], name: "index_ordered_lists_on_recipe_id"
@@ -52,7 +53,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_23_183901) do
 
   create_table "recipes", force: :cascade do |t|
     t.bigint "user_id", null: false
-    t.string "title"
+    t.string "title", null: false
     t.text "description"
     t.string "image"
     t.datetime "created_at", null: false
@@ -62,7 +63,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_23_183901) do
 
   create_table "sub_folders", force: :cascade do |t|
     t.bigint "folder_id", null: false
-    t.string "title"
+    t.string "title", null: false
     t.text "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -79,15 +80,16 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_23_183901) do
   end
 
   create_table "tags", force: :cascade do |t|
-    t.string "label"
+    t.string "label", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
   create_table "textboxes", force: :cascade do |t|
     t.bigint "recipe_id", null: false
-    t.string "title"
+    t.string "title", null: false
     t.string "text_content"
+    t.integer "index_order", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["recipe_id"], name: "index_textboxes_on_recipe_id"
@@ -95,19 +97,20 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_23_183901) do
 
   create_table "unordered_lists", force: :cascade do |t|
     t.bigint "recipe_id", null: false
-    t.string "title"
+    t.string "title", null: false
     t.string "list_items", array: true
+    t.integer "index_order", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["recipe_id"], name: "index_unordered_lists_on_recipe_id"
   end
 
   create_table "users", force: :cascade do |t|
-    t.string "username"
+    t.string "username", null: false
     t.string "first_name"
     t.string "last_name"
-    t.string "email"
-    t.string "password_digest"
+    t.string "email", null: false
+    t.string "password_digest", null: false
     t.text "description"
     t.string "user_image"
     t.datetime "created_at", null: false
