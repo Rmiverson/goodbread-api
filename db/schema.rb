@@ -25,7 +25,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_23_183901) do
 
   create_table "ordered_lists", force: :cascade do |t|
     t.bigint "recipe_id", null: false
-    t.string "title", null: false
+    t.string "title"
     t.string "list_items", array: true
     t.integer "index_order", null: false
     t.string "component_type", default: "ol"
@@ -88,7 +88,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_23_183901) do
 
   create_table "textboxes", force: :cascade do |t|
     t.bigint "recipe_id", null: false
-    t.string "title", null: false
+    t.string "title"
     t.string "text_content"
     t.integer "index_order", null: false
     t.string "component_type", default: "textbox"
@@ -99,7 +99,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_23_183901) do
 
   create_table "unordered_lists", force: :cascade do |t|
     t.bigint "recipe_id", null: false
-    t.string "title", null: false
+    t.string "title"
     t.string "list_items", array: true
     t.integer "index_order", null: false
     t.string "component_type", default: "ul"
