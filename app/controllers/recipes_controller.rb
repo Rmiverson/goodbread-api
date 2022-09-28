@@ -32,9 +32,10 @@ class RecipesController < ApplicationController
     end
 
     def index
-        recipes = Recipe.page(params[:page]).per(1)
+        user_recipes = User.find(params[:user_id]).recipes
+        recipes = user_recipes.page(params[:page]).per(4)
 
-        render json: recipes, each_serializer: RecipeSerializer, meta: meta_attributes(recipes)
+        render json: RecipeSerializer.new(recipes).serialized_json(meta_attributes(recipes))
     end
 
     def show
