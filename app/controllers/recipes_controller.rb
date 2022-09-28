@@ -1,4 +1,5 @@
 class RecipesController < ApplicationController
+    before_action :authorize_request
     def create
         recipe = Recipe.create({user_id: recipe_params[:user_id], title: recipe_params[:title], description: recipe_params[:description]})
 

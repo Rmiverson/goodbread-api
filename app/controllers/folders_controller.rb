@@ -1,4 +1,5 @@
 class FoldersController < ApplicationController
+    before_action :authorize_request
     def create
         folder = Folder.create(folder_params)
         

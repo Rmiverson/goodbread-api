@@ -1,4 +1,5 @@
 class SubFoldersController < ApplicationController
+    before_action :authorize_request
     def create
         sub_folder = SubFolder.create(sub_folder_params)
 

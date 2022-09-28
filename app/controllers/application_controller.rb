@@ -1,15 +1,11 @@
 class ApplicationController < ActionController::API
-
    def not_found
       render json: { error: 'not_found' }, status: 404
    end
 
    def authorize_request
-      # debugger
       headers = request.headers['Authorization']
       header = headers.split(' ').last if !header
-
-      # debugger
 
       begin
          @decoded = JsonWebToken.decode(header)

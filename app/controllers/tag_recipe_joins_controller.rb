@@ -1,4 +1,5 @@
 class TagRecipeJoinsController < ApplicationController
+    before_action :authorize_request
     def create
         tag_recipe_join = TagRecipeJoin.create(join_params)
 

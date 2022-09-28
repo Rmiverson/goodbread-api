@@ -1,4 +1,5 @@
 class RecipeFolderJoinsController < ApplicationController
+    before_action :authorize_request
     def create
         recipe_folder_join = RecipeFolderJoin.create(join_params)
 
