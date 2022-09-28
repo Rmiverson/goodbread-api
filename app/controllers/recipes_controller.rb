@@ -17,6 +17,13 @@ class RecipesController < ApplicationController
                 end
             end
 
+            if !recipe_params[:tag_list].empty?
+                recipe_params[:tag_list].map do |tag|
+                    tag = Tag.create(label: tag)
+                    TagRecipeJoin.create(recipe_id: recipe.id, tag_id: tag.id)
+                end
+            end
+
             render json: RecipeSerializer.new(recipe).serialized_json
         else
             render json: { error: "Invalid inputs", status: 422}, status: 422
