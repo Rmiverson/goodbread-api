@@ -1,29 +1,8 @@
 class RecipeSerializer < ActiveModel::Serializer
-  attributes :id
+  attributes :id, :title, :description
 
-  def initialize (recipe)
-    @recipe = recipe
-  end
-
-  def serialized_json
-    options = {
-      include: {
-        tags: {
-          only: [:id, :label]
-        },
-        ordered_lists: {
-          only: [:id, :title, :list_items, :component_type, :index_order]
-        },
-        unordered_lists: {
-          only: [:id, :title, :list_items, :component_type, :index_order]
-        },
-        textboxes: {
-          only: [:id, :title, :text_content, :component_type, :index_order]
-        }
-      },
-      except: [:created_at, :updated_at]
-    }
-
-    @recipe.to_json(options)
-  end
+  has_many :textboxes
+  has_many :ordered_lists
+  has_many :unordered_lists
+  has_many :tags
 end
