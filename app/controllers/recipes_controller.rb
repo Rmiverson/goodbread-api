@@ -39,7 +39,6 @@ class RecipesController < ApplicationController
 
     def show
         recipe = Recipe.find(params[:id])
-        puts recipe
 
         render json: RecipeSerializer.new(recipe).serialized_json
     end
