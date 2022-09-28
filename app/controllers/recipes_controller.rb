@@ -34,6 +34,8 @@ class RecipesController < ApplicationController
     def index
         recipe = Recipe.all
         
+        # TODO: add pagination to this render
+        
         render json: RecipeSerializer.new(recipe).serialized_json
     end
 

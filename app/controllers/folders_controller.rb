@@ -10,6 +10,8 @@ class FoldersController < ApplicationController
         end
     end
 
+    # TODO: add a show all user folders w/ pagination
+
     def show
         folder = Folder.find(params[:id])
 
