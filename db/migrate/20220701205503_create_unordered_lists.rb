@@ -5,6 +5,7 @@ class CreateUnorderedLists < ActiveRecord::Migration[7.0]
       t.string :title, null: false
       t.string :list_items, :array => true
       t.integer :index_order, null: false
+      t.string :component_type, :default => "ul"
       
       t.timestamps
     end

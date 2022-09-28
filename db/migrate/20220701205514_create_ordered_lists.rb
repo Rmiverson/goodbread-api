@@ -5,6 +5,7 @@ class CreateOrderedLists < ActiveRecord::Migration[7.0]
       t.string :title, null: false
       t.string :list_items, :array => true
       t.integer :index_order, null: false
+      t.string :component_type, :default => "ol"
       
       t.timestamps
     end

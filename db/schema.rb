@@ -28,6 +28,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_23_183901) do
     t.string "title", null: false
     t.string "list_items", array: true
     t.integer "index_order", null: false
+    t.string "component_type", default: "ol"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["recipe_id"], name: "index_ordered_lists_on_recipe_id"
@@ -90,6 +91,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_23_183901) do
     t.string "title", null: false
     t.string "text_content"
     t.integer "index_order", null: false
+    t.string "component_type", default: "textbox"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["recipe_id"], name: "index_textboxes_on_recipe_id"
@@ -100,6 +102,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_23_183901) do
     t.string "title", null: false
     t.string "list_items", array: true
     t.integer "index_order", null: false
+    t.string "component_type", default: "ul"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["recipe_id"], name: "index_unordered_lists_on_recipe_id"
