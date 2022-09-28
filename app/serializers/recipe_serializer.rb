@@ -12,13 +12,13 @@ class RecipeSerializer < ActiveModel::Serializer
           only: [:id, :label]
         },
         ordered_lists: {
-          only: [:id, :title, :list_items]
+          only: [:id, :title, :list_items, :component_type]
         },
         unordered_lists: {
-          only: [:id, :title, :list_items,]
+          only: [:id, :title, :list_items, :component_type]
         },
         textboxes: {
-          only: [:id, :title, :text_content]
+          only: [:id, :title, :text_content, :component_type]
         }
       },
       except: [:created_at, :updated_at]
