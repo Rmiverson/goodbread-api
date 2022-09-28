@@ -26,7 +26,10 @@ class UsersController < ApplicationController
     def show
         user = User.find(params[:id])
 
-        render json: UserSerializer.new(user).serialized_json
+        token = JsonWebToken.encode(user_id: user.id)
+        time = Time.now + 24.hours.to_i
+        time_milli = time.to_f * 1000
+        render json: UserSerializer.new(user).serialized_json({token: token, exp: time_milli}) 
     end
 
     def update
