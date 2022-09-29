@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
   resources :tags, only: [:index, :show, :create]
   resources :sub_folders, only: [:show, :create]
-  resources :folders, only: [:show, :create]
+  resources :folders, only: [:index, :show, :create]
   resources :users, only: [:index, :show]
   resources :recipes, only: [:index, :show, :create]
   resources :folders_recipes, only: [:create]
