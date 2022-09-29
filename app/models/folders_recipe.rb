@@ -1,4 +1,4 @@
-class RecipesFolder < ApplicationRecord
+class FoldersRecipe < ApplicationRecord
     belongs_to :recipe
     belongs_to :folder
 

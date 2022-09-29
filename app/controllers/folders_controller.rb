@@ -37,6 +37,6 @@ class FoldersController < ApplicationController
     private
     
     def folder_params
-        params.require(:folder).permit(:id, :user_id, :title, :description)
+        params.require(:folder).permit(:id, :user_id, :title, :description, recipe_ids: [])
     end
 end

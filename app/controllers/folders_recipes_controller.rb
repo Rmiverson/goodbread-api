@@ -1,9 +1,9 @@
-class RecipesFoldersController < ApplicationController
+class FoldersRecipesController < ApplicationController
     before_action :authorize_request
     def create
-        recipes_folder = RecipesFolder.create(join_params)
+        folders_recipe = FoldersRecipe.create(join_params)
 
-        if recipes_folder.valid?
+        if folders_recipe.valid?
             render json: { message: "Successfully joined Recipe and Folder."}, status: 201
         else
             render json: { message: "Failed to join Recipe and Folder."}, status: 400
@@ -11,19 +11,19 @@ class RecipesFoldersController < ApplicationController
     end
 
     def find_by
-        recipes_folder = RecipesFolder.find_by folder_id: join_params[:folder_id], recipe_id: join_params[:recipe_id]
+        folders_recipe = FoldersRecipe.find_by folder_id: join_params[:folder_id], recipe_id: join_params[:recipe_id]
         
-        if recipes_folder.nil?
+        if folders_recipe.nil?
             render json: { message: "Recipe folder join could not be found."}, status: 404
         else
-            render json:recipes_folder.to_json, status: 200
+            render json:folders_recipe.to_json, status: 200
         end
     end
 
     def destroy
-        recipes_folder = RecipesFolder.find(params[:id])
+        folders_recipe = FoldersRecipe.find(params[:id])
 
-        recipes_folder.destroy
+        folders_recipe.destroy
 
         render json: { message: "Join successfully deleted."}, status: 200
     end
@@ -31,6 +31,6 @@ class RecipesFoldersController < ApplicationController
     private
 
     def join_params
-        params.require(:recipes_folder).permit(:id, :folder_id, :recipe_id)
+        params.require(:folders_recipe).permit(:id, :folder_id, :recipe_id)
     end
 end

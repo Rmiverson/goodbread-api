@@ -17,7 +17,7 @@ class FolderSerializer < ActiveModel::Serializer
       },
       except: [:created_at, :updated_at]
     }
-
+    # debugger
     @folder.to_json(options)
   end
 end

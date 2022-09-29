@@ -7,7 +7,7 @@ class Recipe < ApplicationRecord
     has_many :ordered_lists, :dependent => :destroy
     has_many :unordered_lists, :dependent => :destroy
     
-    has_many :recipes_folders, :dependent => :destroy
+    has_many :folders_recipes, :dependent => :destroy
     has_many :folders, through: :recipes_folders, :dependent => :destroy
     
     has_many :recipes_sub_folders, :dependent => :destroy

@@ -14,14 +14,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_23_183901) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "folder_recipes", id: false, force: :cascade do |t|
-    t.bigint "recipe_id", null: false
-    t.bigint "folder_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["recipe_id", "folder_id"], name: "index_folder_recipes_on_recipe_id_and_folder_id", unique: true
-  end
-
   create_table "folders", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.string "title", null: false
@@ -29,6 +21,14 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_23_183901) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_folders_on_user_id"
+  end
+
+  create_table "folders_recipes", id: false, force: :cascade do |t|
+    t.bigint "recipe_id", null: false
+    t.bigint "folder_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["recipe_id", "folder_id"], name: "index_folders_recipes_on_recipe_id_and_folder_id", unique: true
   end
 
   create_table "ordered_lists", force: :cascade do |t|

@@ -4,9 +4,9 @@ Rails.application.routes.draw do
   resources :folders, only: [:show, :create]
   resources :users, only: [:index, :show]
   resources :recipes, only: [:index, :show, :create]
-  resources :recipe_folder_joins, only: [:create]
-  resources :recipe_sub_folder_joins, only: [:create]
-  resources :tag_recipe_joins, only: [:create]
+  resources :folders_recipes, only: [:create]
+  resources :recipes_sub_folders, only: [:create]
+  resources :recipe_tags, only: [:create]
 
   post "/signup", to: "users#create"
   post "/login", to: "auth#login"
@@ -24,8 +24,8 @@ Rails.application.routes.draw do
   patch '/sub_folders/:id', to: 'sub_folders#update'
   delete '/sub_folders/:id', to: 'sub_folders#destroy'
 
-  get '/recipe_folder_joins', to: 'recipe_folder_joins#find_by'
-  delete '/recipe_folder_joins/:id', to: 'recipe_folder_joins#destroy'
+  get '/folders_recipes', to: 'folders_recipes#find_by'
+  delete '/folders_recipes/:id', to: 'folders_recipes#destroy'
 
   get '/recipe_sub_folder_joins', to: 'recipe_sub_folder_joins#find_by'
   delete '/recipe_sub_folder_joins/:id', to: 'recipe_sub_folder_joins#destroy'
