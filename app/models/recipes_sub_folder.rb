@@ -1,4 +1,4 @@
-class RecipeSubFolderJoin < ApplicationRecord
+class RecipesSubFolder < ApplicationRecord
     belongs_to :recipe
     belongs_to :sub_folder
 

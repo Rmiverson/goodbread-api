@@ -21,7 +21,7 @@ class RecipesController < ApplicationController
             if !recipe_params[:tag_list].empty?
                 recipe_params[:tag_list].map do |tag|
                     tag = Tag.create(label: tag)
-                    TagRecipeJoin.create(recipe_id: recipe.id, tag_id: tag.id)
+                    RecipesTag.create(recipe_id: recipe.id, tag_id: tag.id)
                 end
             end
 
