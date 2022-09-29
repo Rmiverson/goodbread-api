@@ -14,6 +14,14 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_23_183901) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
+  create_table "folder_recipes", id: false, force: :cascade do |t|
+    t.bigint "recipe_id", null: false
+    t.bigint "folder_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["recipe_id", "folder_id"], name: "index_folder_recipes_on_recipe_id_and_folder_id", unique: true
+  end
+
   create_table "folders", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.string "title", null: false
@@ -34,24 +42,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_23_183901) do
     t.index ["recipe_id"], name: "index_ordered_lists_on_recipe_id"
   end
 
-  create_table "recipe_folder_joins", force: :cascade do |t|
-    t.bigint "folder_id"
-    t.bigint "recipe_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["folder_id"], name: "index_recipe_folder_joins_on_folder_id"
-    t.index ["recipe_id"], name: "index_recipe_folder_joins_on_recipe_id"
-  end
-
-  create_table "recipe_sub_folder_joins", force: :cascade do |t|
-    t.bigint "sub_folder_id"
-    t.bigint "recipe_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["recipe_id"], name: "index_recipe_sub_folder_joins_on_recipe_id"
-    t.index ["sub_folder_id"], name: "index_recipe_sub_folder_joins_on_sub_folder_id"
-  end
-
   create_table "recipes", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.string "title", null: false
@@ -62,6 +52,22 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_23_183901) do
     t.index ["user_id"], name: "index_recipes_on_user_id"
   end
 
+  create_table "recipes_sub_folders", id: false, force: :cascade do |t|
+    t.bigint "recipe_id", null: false
+    t.bigint "sub_folder_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["recipe_id", "sub_folder_id"], name: "index_recipes_sub_folders_on_recipe_id_and_sub_folder_id", unique: true
+  end
+
+  create_table "recipes_tags", id: false, force: :cascade do |t|
+    t.bigint "tag_id", null: false
+    t.bigint "recipe_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["tag_id", "recipe_id"], name: "index_recipes_tags_on_tag_id_and_recipe_id", unique: true
+  end
+
   create_table "sub_folders", force: :cascade do |t|
     t.bigint "folder_id", null: false
     t.string "title", null: false
@@ -69,15 +75,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_23_183901) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["folder_id"], name: "index_sub_folders_on_folder_id"
-  end
-
-  create_table "tag_recipe_joins", force: :cascade do |t|
-    t.bigint "recipe_id"
-    t.bigint "tag_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["recipe_id"], name: "index_tag_recipe_joins_on_recipe_id"
-    t.index ["tag_id"], name: "index_tag_recipe_joins_on_tag_id"
   end
 
   create_table "tags", force: :cascade do |t|
@@ -122,14 +119,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_23_183901) do
 
   add_foreign_key "folders", "users"
   add_foreign_key "ordered_lists", "recipes"
-  add_foreign_key "recipe_folder_joins", "folders"
-  add_foreign_key "recipe_folder_joins", "recipes"
-  add_foreign_key "recipe_sub_folder_joins", "recipes"
-  add_foreign_key "recipe_sub_folder_joins", "sub_folders"
   add_foreign_key "recipes", "users"
   add_foreign_key "sub_folders", "folders"
-  add_foreign_key "tag_recipe_joins", "recipes"
-  add_foreign_key "tag_recipe_joins", "tags"
   add_foreign_key "textboxes", "recipes"
   add_foreign_key "unordered_lists", "recipes"
 end

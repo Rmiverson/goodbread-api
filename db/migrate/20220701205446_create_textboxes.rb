@@ -7,7 +7,7 @@ class CreateTextboxes < ActiveRecord::Migration[7.0]
       t.integer :index_order, null: false
       t.string :component_type, :default => "textbox"
       
-      t.timestamps
+      t.timestamps null: false
     end
   end
 end
