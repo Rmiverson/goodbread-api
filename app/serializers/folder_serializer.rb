@@ -5,7 +5,7 @@ class FolderSerializer < ActiveModel::Serializer
     @folder = folder
   end
 
-  def serialized_json
+  def serialized_json(meta = {})
     options = {
       include: {
         recipes: {
@@ -17,7 +17,8 @@ class FolderSerializer < ActiveModel::Serializer
       },
       except: [:created_at, :updated_at]
     }
-    # debugger
-    @folder.to_json(options)
+    data = JSON.parse(@folder.to_json(options))
+    dataWithMeta = {data: data, meta: meta}
+    dataWithMeta.to_json
   end
 end
