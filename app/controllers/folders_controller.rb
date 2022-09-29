@@ -10,7 +10,12 @@ class FoldersController < ApplicationController
         end
     end
 
-    # TODO: add a show all user folders w/ pagination
+    def index
+        
+        user_folders = User.find(params[:user_id]).folders
+        folders = user_folders.page(params[:page]).per(4)
+        render json: FolderSerializer.new(folders).serialized_json(meta_attributes(folders))
+    end
 
     def show
         folder = Folder.find(params[:id])
