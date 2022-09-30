@@ -18,6 +18,7 @@ Rails.application.routes.draw do
   delete '/recipes/:id', to: 'recipes#destroy'
   delete '/recipes/:id/components', to: 'recipes#destroyComponents'
 
+  get '/folders/:id/recipes', to: 'folders#show_recipes'
   patch '/folders/:id', to: 'folders#update'
   delete '/folders/:id', to: 'folders#destroy'
 
