@@ -10,14 +10,6 @@ class FoldersController < ApplicationController
         end
     end
 
-    def index
-        user_folders = User.find(params[:user_id]).folders
-        
-        folders = user_folders.page(params[:page]).per(4)
-        
-        render json: FolderSerializer.new(folders).serialized_json(meta_attributes(folders))
-    end
-
     def show_recipes
         folder = Folder.find(params[:id])
         
