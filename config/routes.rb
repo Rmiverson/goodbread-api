@@ -11,6 +11,8 @@ Rails.application.routes.draw do
   post "/signup", to: "users#create"
   post "/login", to: "auth#login"
 
+  get '/users/:id/folders', to: 'users#show_folders'
+  get '/users/:id/recipes', to: 'users#show_recipes'
   patch '/users/:id', to: 'users#update'
   delete '/users/:id', to: 'users#destroy'
 
@@ -19,9 +21,11 @@ Rails.application.routes.draw do
   delete '/recipes/:id/components', to: 'recipes#destroyComponents'
 
   get '/folders/:id/recipes', to: 'folders#show_recipes'
+  get '/folders/:id/sub_folders', to: 'folders#show_sub_folders'
   patch '/folders/:id', to: 'folders#update'
   delete '/folders/:id', to: 'folders#destroy'
 
+  get '/sub_folders/:id/recipes', to: 'sub_folders#show_recipes'
   patch '/sub_folders/:id', to: 'sub_folders#update'
   delete '/sub_folders/:id', to: 'sub_folders#destroy'
 
