@@ -26,6 +26,14 @@ class FoldersController < ApplicationController
         render json: RecipeSerializer.new(recipes).serialized_json(meta_attributes(recipes))
     end
 
+    def show_sub_folders
+        folder = Folder.find(params[:id])
+        
+        sub_folders = folder.sub_folders.page(params[:page]).per(4)
+        
+        render json: SubFolderSerializer.new(sub_folders).serialized_json(meta_attributes(sub_folders))
+    end
+
     def show
         folder = Folder.find(params[:id])
 
