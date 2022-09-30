@@ -1,11 +1,11 @@
 class SubFolderSerializer < ActiveModel::Serializer
   attributes :id
 
-  def initialize (sub_folder)
+  def initialize(sub_folder)
     @sub_folder = sub_folder
   end
 
-  def serialized_json
+  def serialized_json(meta = {})
     options = {
       include: {
         recipes: {
@@ -14,7 +14,8 @@ class SubFolderSerializer < ActiveModel::Serializer
       },
       except: [:created_at, :updated_at]
     }
-
-    @sub_folder.to_json(options)
+    data = JSON.parse(@sub_folder.to_json(options))
+    dataWithMeta = {data: data, meta: meta}
+    dataWithMeta.to_json
   end
 end
