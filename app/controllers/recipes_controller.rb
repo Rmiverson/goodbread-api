@@ -6,11 +6,11 @@ class RecipesController < ApplicationController
         if recipe.valid?
             if !recipe_params[:components].empty?()
                 recipe_params[:components].map do |component|
-                    if component["type"] === "ol"
+                    if component["component_type"] === "ol"
                         OrderedList.create(recipe_id: recipe[:id], title: component["title"], list_items: component["list_items"], index_order: component["index_order"])
-                    elsif component["type"] === "ul"
+                    elsif component["component_type"] === "ul"
                         UnorderedList.create(recipe_id: recipe[:id], title: component["title"], list_items: component["list_items"], index_order: component["index_order"])
-                    elsif component["type"] === "textbox"
+                    elsif component["component_type"] === "textbox"
                         Textbox.create(recipe_id: recipe[:id], title: component["title"], text_content: component["text_content"], index_order: component["index_order"])
                     else
                         raise Exception.new "Failed to determine recipe component type."
@@ -47,20 +47,29 @@ class RecipesController < ApplicationController
         recipe = Recipe.find(params[:id])
         recipe.update(recipe_params)
 
+        # if component is gone, delete component
         if !recipe_params[:components].empty?()
             recipe_params[:components].map do |componentParameters|
-                if componentParameters["type"] === "ol"
+                if componentParameters["component_type"] === "ol"
                     component = OrderedList.find(componentParameters["id"])
                     component.update(title: componentParameters["title"], list_items: componentParameters["list_items"], index_order: component["index_order"])
-                elsif componentParameters["type"] === "ul"
+                elsif componentParameters["component_type"] === "ul"
                     component = UnorderedList.find(componentParameters["id"])
                     component.update(title: componentParameters["title"], list_items: componentParameters["list_items"], index_order: component["index_order"])
-                elsif componentParameters["type"] === "textbox"
+                elsif componentParameters["component_type"] === "textbox"
                     component = Textbox.find(componentParameters["id"])
                     component.update(title: componentParameters["title"], text_content: componentParameters["text_content"], index_order: component["index_order"])
                 else
                     raise Exception.new "Failed to determine recipe component type."
                 end                
+            end
+        end
+
+        # if tag is different, create new tag
+        if !recipe_params[:tag_list].empty?
+            recipe_params[:tag_list].map do |tag|
+                tag = Tag.find(id: tag.id)
+                RecipesTag.create(recipe_id: recipe.id, tag_id: tag.id)
             end
         end
 
@@ -80,13 +89,13 @@ class RecipesController < ApplicationController
 
         if !recipe_params[:components].empty?()
             recipe_params[:components].map do |componentParameters|
-                if componentParameters["type"] === "ol"
+                if componentParameters["component_type"] === "ol"
                     component = OrderedList.find(componentParameters["id"])
                     component.destroy
-                elsif componentParameters["type"] === "ul"
+                elsif componentParameters["component_type"] === "ul"
                     component = UnorderedList.find(componentParameters["id"])
                     component.destroy
-                elsif componentParameters["type"] === "textbox"
+                elsif componentParameters["component_type"] === "textbox"
                     component = Textbox.find(componentParameters["id"])
                     component.destroy
                 else
@@ -109,7 +118,8 @@ class RecipesController < ApplicationController
             :title,
             :description,
             components: [
-                :type,
+                :id,
+                :component_type,
                 :title, 
                 :text_content, 
                 :index_order,
