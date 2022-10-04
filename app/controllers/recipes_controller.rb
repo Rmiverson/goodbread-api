@@ -20,8 +20,9 @@ class RecipesController < ApplicationController
 
             if !recipe_params[:tag_list].empty?
                 recipe_params[:tag_list].map do |tag|
-                    tag = Tag.create(label: tag)
-                    RecipesTag.create(recipe_id: recipe.id, tag_id: tag.id)
+                    debugger
+                    new_tag = Tag.create(label: tag[:label])
+                    RecipesTag.create(recipe_id: recipe[:id], tag_id: new_tag[:id])
                 end
             end
 
@@ -47,29 +48,81 @@ class RecipesController < ApplicationController
         recipe = Recipe.find(params[:id])
         recipe.update(recipe_params)
 
-        # if component is gone, delete component
-        if !recipe_params[:components].empty?()
-            recipe_params[:components].map do |componentParameters|
-                if componentParameters["component_type"] === "ol"
-                    component = OrderedList.find(componentParameters["id"])
-                    component.update(title: componentParameters["title"], list_items: componentParameters["list_items"], index_order: component["index_order"])
-                elsif componentParameters["component_type"] === "ul"
-                    component = UnorderedList.find(componentParameters["id"])
-                    component.update(title: componentParameters["title"], list_items: componentParameters["list_items"], index_order: component["index_order"])
-                elsif componentParameters["component_type"] === "textbox"
-                    component = Textbox.find(componentParameters["id"])
-                    component.update(title: componentParameters["title"], text_content: componentParameters["text_content"], index_order: component["index_order"])
-                else
-                    raise Exception.new "Failed to determine recipe component type."
-                end                
+        # TODO: validata that this manages updating everything
+        # TODO: work out component deletes
+
+        recipe.components.map do |og_component|
+            if !recipe_params[:components].include?(og_component)
+                og_component.destroy
             end
         end
 
-        # if tag is different, create new tag
+        if !recipe_params[:components].empty?()
+            recipe_params[:components].map do |componentParameters|
+                case componentParameters["component_type"]
+                when "ol"
+                    begin
+                        if componentParameters["id"]
+                            component = OrderedList.find(componentParameters["id"])
+                            component.update(title: componentParameters["title"], list_items: componentParameters["list_items"], index_order: component["index_order"])  
+                        else
+                            OrderedList.create(title: componentParameters["title"], list_items: componentParameters["list_items"], index_order: component["index_order"])
+                        end                     
+                    rescue ActiveRecord::RecordNotUnique
+                        retry
+                    end
+                when "ul"
+                    begin
+                        if componentParameters["id"]
+                            component = UnorderedList.find(componentParameters["id"])
+                            component.update(title: componentParameters["title"], list_items: componentParameters["list_items"], index_order: component["index_order"])                         
+                        else
+                            UnorderedList.create(title: componentParameters["title"], list_items: componentParameters["list_items"], index_order: component["index_order"])
+                        end
+                    rescue ActiveRecord::RecordNotUnique
+                        retry
+                    end
+                when "textbox"
+                    begin
+                        if componentParameters["id"]
+                            component = Textbox.find(componentParameters["id"])
+                            component.update(title: componentParameters["title"], text_content: componentParameters["text_content"], index_order: component["index_order"])                              
+                        else
+                            Textbox.create(title: componentParameters["title"], text_content: componentParameters["text_content"], index_order: component["index_order"])
+                        end
+                    rescue ActiveRecord::RecordNotUnique
+                        retry
+                    end
+                else
+                    raise Exception.new "Failed to determine recipe component type."
+                end            
+            end
+        end
+
+        recipe.tags.map do |og_tag|
+            # TODO: get tag deletion working
+            
+            # debugger
+            if !recipe_params[:tag_list].include?({"id" => og_tag[:id], "label" => og_tag[:label]})
+                debugger
+                og_tag.recipes_tags.find_by(recipe_id: recipe[:id], tag_id: og_tag[:id]).destroy
+            end
+            # if recipe_params[:tag_list].each do |new_tag|
+            #     if new_tag[:label] == og_tag[:label]
+
+            # end
+
+
+            # end
+        end
+
         if !recipe_params[:tag_list].empty?
             recipe_params[:tag_list].map do |tag|
-                tag = Tag.find(id: tag.id)
-                RecipesTag.create(recipe_id: recipe.id, tag_id: tag.id)
+                find_tag = Tag.find(tag[:id])
+                if !find_tag.valid? 
+                    new_tag = Tag.create(tag[:label])
+                    RecipesTag.create(recipe_id: recipe[:id], tag_id: new_tag[:id])
+                end
             end
         end
 
@@ -125,7 +178,10 @@ class RecipesController < ApplicationController
                 :index_order,
                 list_items: []
             ],
-            tag_list: []
+            tag_list: [
+                :id,
+                :label
+            ]
         )
     end
 end
