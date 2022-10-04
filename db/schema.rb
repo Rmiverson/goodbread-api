@@ -23,7 +23,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_23_183901) do
     t.index ["user_id"], name: "index_folders_on_user_id"
   end
 
-  create_table "folders_recipes", id: false, force: :cascade do |t|
+  create_table "folders_recipes", force: :cascade do |t|
     t.bigint "recipe_id", null: false
     t.bigint "folder_id", null: false
     t.datetime "created_at", null: false
@@ -52,7 +52,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_23_183901) do
     t.index ["user_id"], name: "index_recipes_on_user_id"
   end
 
-  create_table "recipes_sub_folders", id: false, force: :cascade do |t|
+  create_table "recipes_sub_folders", force: :cascade do |t|
     t.bigint "recipe_id", null: false
     t.bigint "sub_folder_id", null: false
     t.datetime "created_at", null: false
@@ -60,7 +60,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_23_183901) do
     t.index ["recipe_id", "sub_folder_id"], name: "index_recipes_sub_folders_on_recipe_id_and_sub_folder_id", unique: true
   end
 
-  create_table "recipes_tags", id: false, force: :cascade do |t|
+  create_table "recipes_tags", force: :cascade do |t|
     t.bigint "tag_id", null: false
     t.bigint "recipe_id", null: false
     t.datetime "created_at", null: false
