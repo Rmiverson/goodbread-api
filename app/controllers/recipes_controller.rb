@@ -20,9 +20,19 @@ class RecipesController < ApplicationController
 
             if !recipe_params[:tag_list].empty?
                 recipe_params[:tag_list].map do |tag|
-                    debugger
-                    new_tag = Tag.create(label: tag[:label])
-                    RecipesTag.create(recipe_id: recipe[:id], tag_id: new_tag[:id])
+                    find_tag = Tag.find_by(label: tag[:label])
+                    if find_tag
+                        find_join = RecipesTag.find_by(recipe_id: recipe[:id], tag_id: find_tag[:id])
+                        if !find_join
+                            RecipesTag.create(recipe_id: recipe[:id], tag_id: find_tag[:id])
+                        end
+                        find_tag
+                    else
+                        new_tag = Tag.create(label: tag[:label])
+                        RecipesTag.create(recipe_id: recipe[:id], tag_id: new_tag[:id]) 
+                        new_tag
+                    end
+                    find_tag
                 end
             end
 
@@ -47,26 +57,30 @@ class RecipesController < ApplicationController
     def update
         recipe = Recipe.find(params[:id])
         recipe.update(recipe_params)
-
-        # TODO: validata that this manages updating everything
-        # TODO: work out component deletes
-
-        recipe.components.map do |og_component|
-            if !recipe_params[:components].include?(og_component)
-                og_component.destroy
-            end
-        end
+        recipe.components = [recipe.ordered_lists, recipe.unordered_lists, recipe.textboxes].flatten
 
         if !recipe_params[:components].empty?()
+            recipe.components.map do |og_component|
+                to_delete = true
+                recipe_params[:components].map do |new_component|                   
+                    if og_component[:id] == new_component[:id] && og_component[:type] == new_component[:type]
+                        to_delete = false
+                    end
+                end
+                if to_delete == true
+                    og_component.destroy
+                end
+            end
+
             recipe_params[:components].map do |componentParameters|
                 case componentParameters["component_type"]
                 when "ol"
                     begin
                         if componentParameters["id"]
                             component = OrderedList.find(componentParameters["id"])
-                            component.update(title: componentParameters["title"], list_items: componentParameters["list_items"], index_order: component["index_order"])  
+                            component.update(title: componentParameters["title"], list_items: componentParameters["list_items"], index_order: componentParameters["index_order"])  
                         else
-                            OrderedList.create(title: componentParameters["title"], list_items: componentParameters["list_items"], index_order: component["index_order"])
+                            OrderedList.create(recipe_id: recipe[:id], title: componentParameters["title"], list_items: componentParameters["list_items"], index_order: componentParameters["index_order"])
                         end                     
                     rescue ActiveRecord::RecordNotUnique
                         retry
@@ -75,9 +89,9 @@ class RecipesController < ApplicationController
                     begin
                         if componentParameters["id"]
                             component = UnorderedList.find(componentParameters["id"])
-                            component.update(title: componentParameters["title"], list_items: componentParameters["list_items"], index_order: component["index_order"])                         
+                            component.update(title: componentParameters["title"], list_items: componentParameters["list_items"], index_order: componentParameters["index_order"])                         
                         else
-                            UnorderedList.create(title: componentParameters["title"], list_items: componentParameters["list_items"], index_order: component["index_order"])
+                            UnorderedList.create(recipe_id: recipe[:id], title: componentParameters["title"], list_items: componentParameters["list_items"], index_order: componentParameters["index_order"])
                         end
                     rescue ActiveRecord::RecordNotUnique
                         retry
@@ -86,9 +100,9 @@ class RecipesController < ApplicationController
                     begin
                         if componentParameters["id"]
                             component = Textbox.find(componentParameters["id"])
-                            component.update(title: componentParameters["title"], text_content: componentParameters["text_content"], index_order: component["index_order"])                              
+                            component.update(title: componentParameters["title"], text_content: componentParameters["text_content"], index_order: componentParameters["index_order"])                              
                         else
-                            Textbox.create(title: componentParameters["title"], text_content: componentParameters["text_content"], index_order: component["index_order"])
+                            Textbox.create(recipe_id: recipe[:id], title: componentParameters["title"], text_content: componentParameters["text_content"], index_order: componentParameters["index_order"])
                         end
                     rescue ActiveRecord::RecordNotUnique
                         retry
@@ -99,30 +113,29 @@ class RecipesController < ApplicationController
             end
         end
 
-        recipe.tags.map do |og_tag|
-            # TODO: get tag deletion working
-            
-            # debugger
-            if !recipe_params[:tag_list].include?({"id" => og_tag[:id], "label" => og_tag[:label]})
-                debugger
-                og_tag.recipes_tags.find_by(recipe_id: recipe[:id], tag_id: og_tag[:id]).destroy
-            end
-            # if recipe_params[:tag_list].each do |new_tag|
-            #     if new_tag[:label] == og_tag[:label]
-
-            # end
-
-
-            # end
-        end
-
         if !recipe_params[:tag_list].empty?
-            recipe_params[:tag_list].map do |tag|
-                find_tag = Tag.find(tag[:id])
-                if !find_tag.valid? 
-                    new_tag = Tag.create(tag[:label])
-                    RecipesTag.create(recipe_id: recipe[:id], tag_id: new_tag[:id])
+            # deletes tags if they are missing from original db tag list
+            recipe.tags.map do |og_tag|
+                if !recipe_params[:tag_list].include?({"id" => og_tag[:id], "label" => og_tag[:label]})
+                    og_tag.recipes_tags.find_by(recipe_id: recipe[:id], tag_id: og_tag[:id]).destroy
                 end
+            end  
+
+            # creates new tags if they exist
+            recipe_params[:tag_list].map do |tag|
+                find_tag = Tag.find_by(label: tag[:label])
+                if find_tag
+                    find_join = RecipesTag.find_by(recipe_id: recipe[:id], tag_id: find_tag[:id])
+                    if !find_join
+                        RecipesTag.create(recipe_id: recipe[:id], tag_id: find_tag[:id])
+                    end
+                    find_tag
+                else
+                    new_tag = Tag.create(label: tag[:label])
+                    RecipesTag.create(recipe_id: recipe[:id], tag_id: new_tag[:id]) 
+                    new_tag
+                end
+                find_tag
             end
         end
 
