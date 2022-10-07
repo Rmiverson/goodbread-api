@@ -107,11 +107,11 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_23_183901) do
 
   create_table "users", force: :cascade do |t|
     t.string "username", null: false
-    t.string "first_name"
-    t.string "last_name"
+    t.string "first_name", default: ""
+    t.string "last_name", default: ""
     t.string "email", null: false
     t.string "password_digest", null: false
-    t.text "description"
+    t.text "description", default: ""
     t.string "user_image"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
