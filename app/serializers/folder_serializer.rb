@@ -10,9 +10,6 @@ class FolderSerializer < ActiveModel::Serializer
       include: {
         recipes: {
           only: [:id, :title]
-        },
-        sub_folders: {
-          only: [:id, :title]
         }
       },
       except: [:created_at, :updated_at]
