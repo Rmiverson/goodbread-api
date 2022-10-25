@@ -1,12 +1,13 @@
 class FoldersController < ApplicationController
     before_action :authorize_request
+
     def create
         folder = Folder.create(folder_params)
         
         if folder.valid?
             render json: FolderSerializer.new(folder).serialized_json
         else
-            render json: { message: "Failed to create folder, invalid inputs"}, status: 422 
+            render json: { message: "Failed to create folder, invalid inputs" }, status: 422 
         end
     end
 
@@ -37,7 +38,7 @@ class FoldersController < ApplicationController
 
         folder.destroy
 
-        render json: {message: "Folder successfully deleted"}, status: 200
+        render json: { message: "Folder successfully deleted" }, status: 200
     end
 
     private
