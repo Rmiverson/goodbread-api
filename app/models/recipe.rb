@@ -9,9 +9,6 @@ class Recipe < ApplicationRecord
     
     has_many :folders_recipes, :dependent => :destroy
     has_many :folders, through: :folders_recipes, :dependent => :destroy
-    
-    has_many :recipes_sub_folders, :dependent => :destroy
-    has_many :sub_folders, through: :recipes_sub_folders, :dependent => :destroy
 
     has_many :recipes_tags, :dependent => :destroy
     has_many :tags, through: :recipes_tags, :dependent => :destroy
