@@ -1,7 +1,6 @@
 class Folder < ApplicationRecord
-    attr_accessor :folder_ids
-
     has_many :folders_recipes, :dependent => :destroy
+    has_many :recipes, through: :folders_recipes
 
     has_many :sub_folders, foreign_key: :child_folder_id, class_name: "FolderToFolderJoin"
     has_many :sub_folder_recipes, through: :sub_folders, :dependent => :delete_all

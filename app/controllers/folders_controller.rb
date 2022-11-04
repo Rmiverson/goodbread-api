@@ -2,7 +2,7 @@ class FoldersController < ApplicationController
     before_action :authorize_request
 
     def create
-        folder = Folder.create(folder_params)
+        folder = Folder.create(folder_params)     
         
         if folder.valid?
             render json: FolderSerializer.new(folder).serialized_json
