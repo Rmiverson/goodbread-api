@@ -1,5 +1,6 @@
-require './lib/json_web_token'
 class ApplicationController < ActionController::API
+   include Error::ErrorHandler
+
    def not_found
       render json: { error: 'not_found' }, status: 404
    end
