@@ -10,14 +10,22 @@ class UsersController < ApplicationController
             time_milli = time.to_f * 1000
             render json: UserSerializer.new(@user).serialized_json({token: token, exp: time_milli}) 
         else
-            render json: { errors: @user.errors.full_messages }, status: :unprocessable_entity
+            render json: {
+                error: "Invalid inputs for signup."
+            }, status: :unprocessable_entity
         end
     end
 
     def index
         @users = User.all
 
-        render json: UserSerializer.new(@users).serialized_json
+        if @users
+            render json: UserSerializer.new(@users).serialized_json
+        else
+            render json: {
+                error: "Failed to get users."
+            }, status: :internal_server_error
+        end
     end
 
     def show_folders
@@ -66,30 +74,59 @@ class UsersController < ApplicationController
     end
 
     def update
-        user = User.find(params[:id])
+        @user = User.find(params[:id])
 
-        unless user.update(user_params)
-            render json: { errors: user.errors.full_messages }, status: :unprocessable_entity
+        if @user
+            unless @user.update(user_params)
+                render json: {
+                    errors: "Unable to update user, invalid inputs."
+                }, status: :unprocessable_entity
+            end
+
+            render json: UserSerializer.new(@user).serialized_json
+        else
+            render json: {
+                error: "User with id #{params[:id]} not found."
+            }, status: :not_found
         end
-
-        render json: UserSerializer.new(user).serialized_json
     end
 
     def destroy
-        user = User.find(params[:id])
-        user.destroy
-        render json: {message: "User successfully deleted"}, status: 200
+        @user = User.find(params[:id])
+
+        if @user
+            unless @user.destroy
+                render json: { 
+                    errors: "Unable to delete user."
+                }, status: :internal_server_error
+            end
+
+            render json: {
+                message: "User successfully deleted"
+            }, status: :ok
+        else
+            render json: {
+                error: "User with id #{params[:id]} not found."
+            }, status: :not_found
+        end
     end
 
     private
 
     def find_user
-        user = User.find_by_username!(params[:username])
-        rescue ActiveRecord::RecordNotFound
-            render json: { errors: 'User not found' }, status: :not_found
+        @user = User.find_by_username!(params[:username])
+        if @user
+            @user
+        else
+            render json: {
+                error: "User with id #{params[:id]} not found."
+            }, status: :not_found
+        end
     end
     
     def user_params
-        params.require(:user).permit(:id, :username, :first_name, :last_name, :email, :password, :description)
+        @params = params.require(:user).permit(:id, :username, :first_name, :last_name, :email, :password, :description)
+
+        # add custom error for bad params
     end
 end
