@@ -40,12 +40,18 @@ class UsersController < ApplicationController
     end
 
     def show
-        user = User.find(params[:id])
+        @user = User.find(params[:id])
 
-        token = JsonWebToken.encode(user_id: user.id)
+        token = JsonWebToken.encode(user_id: @user.id)
+        # redundant to have another exp time sent to the frontend, exp is handled by api 
         time = Time.now + 24.hours.to_i
         time_milli = time.to_f * 1000
-        render json: UserSerializer.new(user).serialized_json({token: token, exp: time_milli}) 
+        render json: UserSerializer.new(@user).serialized_json({token: token, exp: time_milli})
+
+        rescue ActiveRecord::RecordNotFound
+            render json: {
+                error: "User with id #{params[:id]} not found."
+            }, status: :not_found
     end
 
     def update
