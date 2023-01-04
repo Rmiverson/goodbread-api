@@ -1,42 +1,51 @@
-require './lib/json_web_token'
-
 class UsersController < ApplicationController
     before_action :authorize_request, except: :create
 
-    # signup
     def create
-        user = User.create(user_params)
+        @user = User.create(user_params)
 
-        if user.valid?
-            token = JsonWebToken.encode(user_id: user.id)
+        if @user.valid?
+            token = JsonWebToken.encode(user_id: @user.id)
             time = Time.now + 24.hours.to_i
             time_milli = time.to_f * 1000
-            render json: UserSerializer.new(user).serialized_json({token: token, exp: time_milli}) 
+            render json: UserSerializer.new(@user).serialized_json({token: token, exp: time_milli}) 
         else
-            render json: { errors: user.errors.full_messages }, status: :unprocessable_entity
+            render json: { errors: @user.errors.full_messages }, status: :unprocessable_entity
         end
     end
 
     def index
-        users = User.all
+        @users = User.all
 
-        render json: UserSerializer.new(users).serialized_json
+        render json: UserSerializer.new(@users).serialized_json
     end
 
     def show_folders
-        user = User.find(params[:id])
+        @user = User.find(params[:id])
 
-        folders = user.folders.page(params[:page]).per(15)
+        folders = @user.folders.page(params[:page]).per(15)
 
-        render json: FolderSerializer.new(folders).serialized_json(meta_attributes(folders))
+        if @user
+            render json: FolderSerializer.new(folders).serialized_json(meta_attributes(folders))
+        else
+            render json: {
+                error: "User with id #{params[:id]} not found."
+            }, status: :not_found
+        end
     end
 
     def show_recipes
-        user = User.find(params[:id])
+        @user = User.find(params[:id])
 
-        recipes = user.recipes.page(params[:page]).per(15)
+        recipes = @user.recipes.page(params[:page]).per(15)
 
-        render json: RecipeSerializer.new(recipes).serialized_json(meta_attributes(recipes))
+        if @user
+            render json: RecipeSerializer.new(recipes).serialized_json(meta_attributes(recipes))
+        else
+            render json: {
+                error: "User with id #{params[:id]} not found."
+            }, status: :not_found
+        end
     end
 
     def show
@@ -46,12 +55,14 @@ class UsersController < ApplicationController
         # redundant to have another exp time sent to the frontend, exp is handled by api 
         time = Time.now + 24.hours.to_i
         time_milli = time.to_f * 1000
-        render json: UserSerializer.new(@user).serialized_json({token: token, exp: time_milli})
 
-        rescue ActiveRecord::RecordNotFound
+        if @user
+            render json: UserSerializer.new(@user).serialized_json({token: token, exp: time_milli})
+        else
             render json: {
                 error: "User with id #{params[:id]} not found."
             }, status: :not_found
+        end
     end
 
     def update
