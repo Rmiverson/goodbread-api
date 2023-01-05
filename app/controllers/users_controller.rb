@@ -12,7 +12,7 @@ class UsersController < ApplicationController
         else
             render json: {
                 error: "Invalid inputs for signup."
-            }, status: :unprocessable_entity
+            }, status: :bad_request
         end
     end
 
@@ -80,7 +80,7 @@ class UsersController < ApplicationController
             unless @user.update(user_params)
                 render json: {
                     error: "Unable to update user, invalid inputs."
-                }, status: :unprocessable_entity
+                }, status: :bad_request
             end
 
             render json: UserSerializer.new(@user).serialized_json
@@ -125,8 +125,6 @@ class UsersController < ApplicationController
     end
     
     def user_params
-        @params = params.require(:user).permit(:id, :username, :first_name, :last_name, :email, :password, :description)
-
-        # add custom error for bad params
+        params.require(:user).permit(:id, :username, :first_name, :last_name, :email, :password, :description)
     end
 end
