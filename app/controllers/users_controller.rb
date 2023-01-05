@@ -79,7 +79,7 @@ class UsersController < ApplicationController
         if @user
             unless @user.update(user_params)
                 render json: {
-                    errors: "Unable to update user, invalid inputs."
+                    error: "Unable to update user, invalid inputs."
                 }, status: :unprocessable_entity
             end
 
@@ -97,7 +97,7 @@ class UsersController < ApplicationController
         if @user
             unless @user.destroy
                 render json: { 
-                    errors: "Unable to delete user."
+                    error: "Unable to delete user."
                 }, status: :internal_server_error
             end
 
