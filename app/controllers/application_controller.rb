@@ -1,10 +1,6 @@
 class ApplicationController < ActionController::API
    include Error::ErrorHandler
 
-   def not_found
-      render json: { error: 'not_found' }, status: 404
-   end
-
    def authorize_request
       headers = request.headers['Authorization']
       header = headers.split(' ').last if !header
@@ -12,10 +8,16 @@ class ApplicationController < ActionController::API
       begin
          @decoded = JsonWebToken.decode(header)
          @current_user = User.find(@decoded[:user_id])
+
       rescue ActiveRecord::RecordNotFound => e
-         render json: { errors: e.message }, status: :unauthorized
+         render json: {
+            error: e.message
+         }, status: :unauthorized
+         
       rescue JWT::DecodeError => e
-         render json: { errors: e.message }, status: :unauthorized
+         render json: {
+            error: e.message
+         }, status: :unauthorized
       end
    end
 
@@ -23,7 +25,7 @@ class ApplicationController < ActionController::API
       {
          current_page: collection.current_page,
          next_page: collection.next_page,
-         prev_page: collection.prev_page, # use collection.previous_page when using will_paginate
+         prev_page: collection.prev_page,
          total_pages: collection.total_pages,
          total_count: collection.total_count
       }.merge(extra_meta)
