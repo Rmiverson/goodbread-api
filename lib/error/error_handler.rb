@@ -7,13 +7,25 @@ module Error
                 end
                 
                 # doesnt work, activeRecord::unprocessableentity isnt a thing, need to find out what it really is
-                # rescue_from ActiveRecord::UnprocessableEntity do |e|
+                # rescue_from UnprocessableEntity do |e|
                 #     respond(:unprocessable_entity, 422, e.to_s)
                 # end
 
-                rescue_from StandardError do |e|
-                    respond(:standard_error, 500, e.to_s)
+                rescue_from ActionController::BadRequest do |e|
+                    respond(:bad_request, 400, e.to_s)
                 end
+
+                rescue_from ActionController::ParameterMissing do |e|
+                    respond(:bad_request, 400, e.to_s)
+                end
+
+                rescue_from ActionController::UnpermittedParameters do |e|
+                    respond(:bad_request, 400, e.to_s)
+                end
+
+                # rescue_from StandardError do |e|
+                #     respond(:standard_error, 500, e.to_s)
+                # end
             end
         end
 
