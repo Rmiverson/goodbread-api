@@ -33,25 +33,53 @@ class FoldersController < ApplicationController
     end
 
     def show
-        folder = Folder.find(params[:id])
+        @folder = Folder.find(params[:id])
 
-        render json: FolderSerializer.new(folder).serialized_json
+        if @folder 
+            render json: FolderSerializer.new(@folder).serialized_json
+        else
+            render json: {
+                error: "Could not find folder with id of #{@folder[:id]}"
+            }, status: :not_found
+        end
     end
 
     def update
-        folder = Folder.find(params[:id])
+        @folder = Folder.find(params[:id])
 
-        folder.update(folder_params)
+        if @folder
+            unless @folder.update(folder_params)
+                render json: {
+                    error: "Could not update folder with id of #{@folder[:id]}"
+                }, status: :bad_request                
+            end
 
-        render json: FolderSerializer.new(folder).serialized_json
+            render json: FolderSerializer.new(@folder).serialized_json
+        else
+            render json: {
+                error: "Could not find folder with id of #{@folder[:id]}"
+            }, status: :not_found
+        end
     end
 
     def destroy
-        folder = Folder.find(params[:id])
+        @folder = Folder.find(params[:id])
 
-        folder.destroy
+        if @folder
+            unless @folder.destroy
+                render json: {
+                    error: "Could not delete folder with id of #{@folder[:id]}"
+                }, status: :internal_server_error
+            end
 
-        render json: { message: "Folder successfully deleted" }, status: 200
+            render json: {
+                message: "Folder successfully deleted"
+            }, status: :ok
+        else
+            render json: {
+                error: "Could not find folder with id of #{@folder[:id]}"
+            }, status: :not_found
+        end
     end
 
     private
