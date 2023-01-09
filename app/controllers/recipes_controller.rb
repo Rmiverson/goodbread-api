@@ -164,35 +164,57 @@ class RecipesController < ApplicationController
     end
 
     def destroy
-        recipe = Recipe.find(params[:id])
+        @recipe = Recipe.find(params[:id])
 
-        recipe.destroy
-
-        render json: {message: "Recipe successfully deleted"}, status: 200
+        if @recipe
+            unless @recipe.destroy
+                render json: {
+                    error: "Unable to delete recipe with id of #{@recipe[:id]}"
+                }, status: :internal_server_error
+            end
+            
+            render json: {
+                message: "Recipe with id of #{@recipe[:id]} successfully deleted."
+            }, status: :ok
+        else
+            render json: {
+                error: "Recipe with id of #{@recipe[:id]} not found."
+            }, status: :not_found
+        end
     end
 
     def destroyComponents
-        recipe = Recipe.find(params[:id])
+        @recipe = Recipe.find(params[:id])
 
-        if !recipe_params[:components].empty?()
-            recipe_params[:components].map do |componentParameters|
-                if componentParameters["component_type"] === "ol"
-                    component = OrderedList.find(componentParameters["id"])
-                    component.destroy
-                elsif componentParameters["component_type"] === "ul"
-                    component = UnorderedList.find(componentParameters["id"])
-                    component.destroy
-                elsif componentParameters["component_type"] === "textbox"
-                    component = Textbox.find(componentParameters["id"])
-                    component.destroy
-                else
-                    raise Exception.new "Failed to determine recipe component type."
-                end                
+        if @recipe
+            if !recipe_params[:components].empty?()
+                recipe_params[:components].map do |componentParameters|
+                    if componentParameters["component_type"] === "ol"
+                        component = OrderedList.find(componentParameters["id"])
+                        component.destroy
+                    elsif componentParameters["component_type"] === "ul"
+                        component = UnorderedList.find(componentParameters["id"])
+                        component.destroy
+                    elsif componentParameters["component_type"] === "textbox"
+                        component = Textbox.find(componentParameters["id"])
+                        component.destroy
+                    else
+                        raise Exception.new "Failed to determine recipe component type."
+                    end                
+                end
+
+                render json: {
+                    message: "Recipe compnent(s) successfully deleted"
+                }, status: :ok
+            else
+                render json: {
+                    message: "No recipe component(s) to delete."
+                }, status: :ok
             end
-
-            render json: {message: "Recipe compnent(s) successfully deleted"}, status: 200
         else
-            render json: {message: "No recipe component(s) to delete."}, status: 404
+            render json: {
+                error: "Recipe with id of #{@recipe[:id]} not found."
+            }, status: :not_found
         end
     end
 
