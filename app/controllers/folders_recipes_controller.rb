@@ -1,5 +1,6 @@
 class FoldersRecipesController < ApplicationController
     before_action :authorize_request
+    
     def create
         @folders_recipe = FoldersRecipe.create(join_params)
 

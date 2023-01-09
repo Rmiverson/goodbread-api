@@ -1,5 +1,6 @@
 class TagsController < ApplicationController
     before_action :authorize_request
+    
     def create
         @tag = Tag.create(tag_params)
 

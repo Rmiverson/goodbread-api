@@ -1,5 +1,6 @@
 class RecipesTagsController < ApplicationController
     before_action :authorize_request
+    
     def create
         @recipe_tag = RecipesTag.create(join_params)
 
