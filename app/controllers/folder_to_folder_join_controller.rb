@@ -2,22 +2,36 @@ class FolderToFolderJoinController < ApplicationController
     before_action :authorize_request
 
     def create
-        join = FolderToFolderJoin.create(join_params)
+        @join = FolderToFolderJoin.create(join_params)
         
-        if join.valid?
-            render json: { message: "Join Successful" } status: 200            
+        if @join
+            render json: {
+                message: "Succesfully joined folders."
+            } status: :ok
         else
-            render json: { message: "Failed to join folders" }, status: 422
+            render json: {
+                error: "Failed to join folders."
+            }, status: :bad_request
         end
     end
 
     def destroy
-        join = FolderToFolderJoin.find(join_params)
+        @join = FolderToFolderJoin.find(join_params)
 
-        if join.valid?
-            join.destroy
+        if @join
+            unless @join.destroy
+                render json: {
+                    error: "Could not delete folders relation."
+                }, status: :internal_server_error
+            end
+
+            render json: {
+                message: "Successfully deleted folders relation."
+            }, status: :ok
         else
-            render json: { message: "Failed to delete join folder" }, status: 422
+            render json: {
+                error: "Could not find folders relation."
+            }, status: :not_found
         end
     end
 
