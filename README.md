@@ -1,24 +1,19 @@
-# README
+# GoodBread (API)
+### Recipe hoarding done right.
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+## About
+GoodBread is recipe web application that aims to be the home for your recipes that your friends and family send you, and for the many recipes that fill up your bookmarks bar in your web browser. The goal is to make your recipes easy to organize, find, and share. Currently there are folders and tags to help organize recipes, as well as a dynamic recipe form to help write new recipes.
 
-Things you may want to cover:
+## Some Resources Used on the API
+* Ruby 3.1.2
+* Ruby on Rails 7.0.3
+* PostgreSQL 15
+* JWT API Authentication
+* BCrypt Encryption
+* Kaminari Pagination Handling
+* Model Serialization
 
-* Ruby version
+### Frontend information can be found [here](https://github.com/Rmiverson/goodbread).
 
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+## Contributer(s)
+* [Riley M. Iverson](https://github.com/Rmiverson) (Lead Developer)
