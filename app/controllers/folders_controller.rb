@@ -15,7 +15,7 @@ class FoldersController < ApplicationController
 
     def show_recipes
         @folder = Folder.find(params[:id])
-        @recipes = folder.recipes.page(params[:page]).per(15)
+        @recipes = @folder.recipes.page(params[:page]).per(15)
 
         if @folder
             if @recipes
