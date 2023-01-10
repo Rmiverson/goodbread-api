@@ -23,6 +23,14 @@ module Error
                     respond(:bad_request, 400, e.to_s)
                 end
 
+                rescue_from RuntimeError do |e|
+                    respond(:internal_server_error, 500, e.to_s)
+                end
+
+                rescue_from NameError do |e|
+                    respond(:internal_server_error, 500, e.to_s)
+                end
+
                 # rescue_from StandardError do |e|
                 #     respond(:standard_error, 500, e.to_s)
                 # end
