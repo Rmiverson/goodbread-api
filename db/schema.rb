@@ -50,10 +50,13 @@ ActiveRecord::Schema[7.0].define(version: 2022_10_24_204303) do
   end
 
   create_table "recipes", force: :cascade do |t|
-    t.bigint "user_id", null: false
+    t.bigint "user_id"
     t.string "title", null: false
-    t.text "description"
-    t.string "image"
+    t.text "description", null: false
+    t.string "component"
+    t.string "image", null: false
+    t.string "tag_list"
+    t.string "recipe_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_recipes_on_user_id"

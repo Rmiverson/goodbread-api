@@ -14,6 +14,7 @@ Rails.application.routes.draw do
   put '/users/:id', to: 'users#update'
   delete '/users/:id', to: 'users#destroy'
 
+
   put '/recipes/:id', to: 'recipes#update'
   delete '/recipes/:id', to: 'recipes#destroy'
   delete '/recipes/:id/components', to: 'recipes#destroyComponents'
@@ -31,4 +32,8 @@ Rails.application.routes.draw do
 
   put '/tag_recipe_joins', to: 'tag_recipe_joins#find_by'
   delete '/tag_recipe_joins/:id', to: 'tag_recipe_joins#destroy'
+
+
+
+  post 'recipes/create', to: 'recipes#create'
 end

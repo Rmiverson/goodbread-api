@@ -13,14 +13,14 @@ gem 'active_model_serializers'
 gem "rails", "~> 7.0.3"
 
 # Use postgresql as the database for Active Record
-gem "pg", "~> 1.1"
-
+gem 'pg', '~> 1.4', '>= 1.4.5'
 # Use the Puma web server [https://github.com/puma/puma]
 gem "puma", "~> 5.0"
 
 # paginator
 # gem 'pagy'
 gem 'kaminari'
+
 
 # allows meta and header to have proper pagination information
 # gem 'pager_api'
@@ -58,4 +58,3 @@ group :development do
   # Speed up commands on slow machines / big apps [https://github.com/rails/spring]
   # gem "spring"
 end
-

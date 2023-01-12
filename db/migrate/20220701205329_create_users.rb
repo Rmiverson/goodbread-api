@@ -9,7 +9,7 @@ class CreateUsers < ActiveRecord::Migration[7.0]
       t.text :description, :default => ""
       t.string :user_image
 
-      t.timestamps null: false
+      t.timestamps
     end
   end
 end

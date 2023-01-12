@@ -1,43 +1,47 @@
 class RecipesController < ApplicationController
-    before_action :authorize_request
-    
+        before_action :authorize_request
     def create
-        @recipe = Recipe.create({user_id: recipe_params[:user_id], title: recipe_params[:title], description: recipe_params[:description]})
+
+        permitted = recipe_params
+
+        @recipe = Recipe.create(id: permitted[:id],
+
+                                user_id: permitted[:user_id],
+
+                                title: permitted[:title],
+
+                                description: permitted[:description],
+
+                                image: permitted[:image],
+
+                                recipe_id: permitted[:recipe_id])
+
+
 
         if @recipe.valid?
-            if !recipe_params[:components].empty?()
-                recipe_params[:components].map do |component|
-                    if component["component_type"] === "ol"
-                        OrderedList.create(recipe_id: @recipe[:id], title: component["title"], list_items: component["list_items"], index_order: component["index_order"])
-                    elsif component["component_type"] === "ul"
-                        UnorderedList.create(recipe_id: @recipe[:id], title: component["title"], list_items: component["list_items"], index_order: component["index_order"])
-                    elsif component["component_type"] === "textbox"
-                        Textbox.create(recipe_id: @recipe[:id], title: component["title"], text_content: component["text_content"], index_order: component["index_order"])
+                    if permitted[:component_type] === "ol" || permitted[:component_type] === "ul"
+                        Recipe.update(@recipe.id, components: {title: permitted[:title], list_items: permitted[:list_items], index_order: permitted[:index_order]})
+        
+                    elsif permitted["component_type"] === "textbox"
+                        Recipe.update(@recipe.id, components: {title: permitted[:title], text_content: permitted[:text_content], index_order: permitted[:index_order]})
+
                     else
                         raise Exception.new "Failed to determine recipe component type."
                     end
-                end
-            end
 
-            if !recipe_params[:tag_list].empty?
-                recipe_params[:tag_list].map do |tag|
-                    find_tag = Tag.find_by(label: tag[:label])
-                    if find_tag
-                        find_join = RecipesTag.find_by(recipe_id: @recipe[:id], tag_id: find_tag[:id])
-                        if !find_join
-                            RecipesTag.create(recipe_id: @recipe[:id], tag_id: find_tag[:id])
-                        end
-                        find_tag
+                #search for existing label tag if the tag is unique create a new tag
+
+                    if tag_validator(permitted[:label])
+                        new_tag = Tag.create(label: permitted[:label])
+                        RecipesTag.create(recipe_id: @recipe.id, tag_id: new_tag.id) 
                     else
-                        new_tag = Tag.create(label: tag[:label])
-                        RecipesTag.create(recipe_id: @recipe[:id], tag_id: new_tag[:id]) 
-                        new_tag
-                    end
-                    find_tag
-                end
-            end
+                        render json: {
+                                    error: "Entry already exists."
+                                }, status: :bad_request
 
-            render json: RecipeSerializer.new(@recipe).serialized_json
+                    end
+
+            render json: RecipeSerializer.new(@recipe)
         else
             render json: {
                 error: "Invalid inputs for recipes create."
@@ -45,16 +49,38 @@ class RecipesController < ApplicationController
         end
     end
 
-    def index
-        @recipes = Recipe.all.page(params[:page]).per(15)
+    #checks for a unique label in the database
 
-        if @recipes
-            render json: RecipeSerializer.new(@recipes).serialized_json(meta_attributes(@recipes))
-        else
-            render json: {
-                error: "Failed to get recipes."
-            }, status: :internal_server_error
+    def tag_validator(label)
+
+        output = true
+
+
+        Recipe.all.map do |recipe|
+
+            if !recipe.tag_list.nil?             
+             list = eval(recipe.tag_list)
+
+                if list[:label] == label; output = false
+                end
+            end
         end
+        return output
+
+    end
+
+
+
+    def index
+         @recipes = Recipe.all.page(params[:page]).per(15)
+
+         if @recipes
+             render json: RecipeSerializer.new(@recipes).serialized_json(meta_attributes(@recipes))
+         else
+             render json: {
+                 error: "Failed to get recipes."
+             }, status: :internal_server_error
+         end
     end
 
     def show
@@ -73,13 +99,13 @@ class RecipesController < ApplicationController
         @recipe = Recipe.find(params[:id])
 
         if @recipe
-            @recipe.update(recipe_params)
+            @recipe.update(params)
             @recipe.components = [@recipe.ordered_lists, @recipe.unordered_lists, @recipe.textboxes].flatten
 
-            if !recipe_params[:components].empty?()
+            if !params[:components].empty?()
                 @recipe.components.map do |og_component|
                     to_delete = true
-                    recipe_params[:components].map do |new_component|                   
+                    params[:components].map do |new_component|                   
                         if og_component[:id] == new_component[:id] && og_component[:type] == new_component[:type]
                             to_delete = false
                         end
@@ -89,7 +115,7 @@ class RecipesController < ApplicationController
                     end
                 end
 
-                recipe_params[:components].map do |componentParameters|
+                params[:components].map do |componentParameters|
                     case componentParameters["component_type"]
                     when "ol"
                         begin
@@ -130,16 +156,16 @@ class RecipesController < ApplicationController
                 end
             end
 
-            if !recipe_params[:tag_list].empty?
+            if !params[:tag_list].empty?
                 # deletes tags if they are missing from original db tag list
                 @recipe.tags.map do |og_tag|
-                    if !recipe_params[:tag_list].include?({"id" => og_tag[:id], "label" => og_tag[:label]})
+                    if !params[:tag_list].include?({"id" => og_tag[:id], "label" => og_tag[:label]})
                         og_tag.recipes_tags.find_by(recipe_id: @recipe[:id], tag_id: og_tag[:id]).destroy
                     end
                 end  
 
                 # creates new tags if they exist
-                recipe_params[:tag_list].map do |tag|
+                params[:tag_list].map do |tag|
                     find_tag = Tag.find_by(label: tag[:label])
                     if find_tag
                         find_join = RecipesTag.find_by(recipe_id: @recipe[:id], tag_id: find_tag[:id])
@@ -188,8 +214,8 @@ class RecipesController < ApplicationController
         @recipe = Recipe.find(params[:id])
 
         if @recipe
-            if !recipe_params[:components].empty?()
-                recipe_params[:components].map do |componentParameters|
+            if !params[:components].empty?()
+                params[:components].map do |componentParameters|
                     if componentParameters["component_type"] === "ol"
                         component = OrderedList.find(componentParameters["id"])
                         component.destroy
@@ -219,26 +245,28 @@ class RecipesController < ApplicationController
         end
     end
 
-    private
 
     def recipe_params
-        params.require(:recipe).permit(
-            :id,
-            :user_id,
-            :title,
-            :description,
-            components: [
-                :id,
-                :component_type,
-                :title, 
-                :text_content, 
-                :index_order,
-                list_items: []
-            ],
-            tag_list: [
-                :id,
-                :label
-            ]
-        )
-    end
+        permitted = params.permit(
+           :id,
+           :user_id,
+           :title,
+           :description,
+           :image,
+           :recipe_id,
+           :tag_list,
+           :component_type,
+           :list_items,
+           :index_order,
+           :text_content,
+           :label,
+           :tag_id)
+        return permitted
+    end 
+
 end
+
+
+
+
+
