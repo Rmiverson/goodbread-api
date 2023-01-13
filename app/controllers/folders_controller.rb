@@ -5,7 +5,7 @@ class FoldersController < ApplicationController
         @folder = Folder.create(folder_params)     
         
         if @folder.valid?
-            render json: FolderSerializer.new(folder).serialized_json
+            render json: FolderSerializer.new(@folder).serialized_json
         else
             render json: {
                 Error: "Failed to create folder, invalid inputs"
@@ -19,7 +19,7 @@ class FoldersController < ApplicationController
 
         if @folder
             if @recipes
-                render json: RecipeSerializer.new(recipes).serialized_json(meta_attributes(recipes))
+                render json: RecipeSerializer.new(@recipes).serialized_json(meta_attributes(@recipes))
             else
                 render json: {
                     error: "Could not get recipes from folder with id of #{@folder[:id]}"
