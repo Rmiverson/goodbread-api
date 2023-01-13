@@ -5,7 +5,7 @@ class FoldersController < ApplicationController
         @folder = Folder.create(folder_params)     
         
         if @folder.valid?
-            render json: FolderSerializer.new(folder).serialized_json
+            render json: FolderSerializer.new(@folder).serialized_json
         else
             render json: {
                 Error: "Failed to create folder, invalid inputs"
