@@ -1,5 +1,4 @@
 class RecipesTag < ApplicationRecord
-    # self.table_name = 'recipes_tags'
     belongs_to :tag
     belongs_to :recipe
 

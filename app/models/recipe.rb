@@ -1,8 +1,6 @@
 class Recipe < ApplicationRecord
     attr_accessor :components, :tag_list
 
-    require 'json'
-
     has_many :textboxes, :dependent => :destroy
     has_many :ordered_lists, :dependent => :destroy
     has_many :unordered_lists, :dependent => :destroy
