@@ -11,14 +11,8 @@ class RecipeSerializer < ActiveModel::Serializer
         tags: {
           only: [:id, :label]
         },
-        ordered_lists: {
-          only: [:id, :title, :list_items, :component_type, :index_order]
-        },
-        unordered_lists: {
-          only: [:id, :title, :list_items, :component_type, :index_order]
-        },
-        textboxes: {
-          only: [:id, :title, :text_content, :component_type, :index_order]
+        components: {
+          only: [:id, :index_order, :sub_title, :text, :ol_items, :ul_items ]
         }
       },
       except: [:created_at, :updated_at]
