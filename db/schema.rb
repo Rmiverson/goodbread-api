@@ -10,21 +10,9 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_02_03_184814) do
+ActiveRecord::Schema[7.0].define(version: 2022_08_23_183901) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
-
-  create_table "components", force: :cascade do |t|
-    t.bigint "recipe_id", null: false
-    t.integer "index_order", null: false
-    t.string "sub_title"
-    t.string "text"
-    t.string "ul_items", array: true
-    t.string "ol_items", array: true
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["recipe_id"], name: "index_components_on_recipe_id"
-  end
 
   create_table "folders", force: :cascade do |t|
     t.bigint "user_id", null: false
@@ -47,6 +35,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_03_184814) do
     t.bigint "user_id", null: false
     t.string "title", null: false
     t.text "description"
+    t.text "bodyText"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_recipes_on_user_id"
@@ -77,7 +66,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_03_184814) do
     t.datetime "updated_at", null: false
   end
 
-  add_foreign_key "components", "recipes"
   add_foreign_key "folders", "users"
   add_foreign_key "recipes", "users"
 end
