@@ -2,28 +2,16 @@ class RecipesController < ApplicationController
     before_action :authorize_request
     
     def create
-        @recipe = Recipe.create({user_id: recipe_params[:user_id], title: recipe_params[:title], description: recipe_params[:description]})
+        @recipe = Recipe.create({user_id: recipe_params[:user_id], title: recipe_params[:title], description: recipe_params[:description], bodyText: recipe_params[:bodyText]})
 
         if @recipe.valid?
-            if !recipe_params[:components].empty?()
-                recipe_params[:components].map do |component|
-                    if component["component_type"] === "ol"
-                        OrderedList.create(recipe_id: @recipe[:id], title: component["title"], list_items: component["list_items"], index_order: component["index_order"])
-                    elsif component["component_type"] === "ul"
-                        UnorderedList.create(recipe_id: @recipe[:id], title: component["title"], list_items: component["list_items"], index_order: component["index_order"])
-                    elsif component["component_type"] === "textbox"
-                        Textbox.create(recipe_id: @recipe[:id], title: component["title"], text_content: component["text_content"], index_order: component["index_order"])
-                    else
-                        raise Exception.new "Failed to determine recipe component type."
-                    end
-                end
-            end
-
             if !recipe_params[:tag_list].empty?
                 recipe_params[:tag_list].map do |tag|
                     find_tag = Tag.find_by(label: tag[:label])
+
                     if find_tag
                         find_join = RecipesTag.find_by(recipe_id: @recipe[:id], tag_id: find_tag[:id])
+
                         if !find_join
                             RecipesTag.create(recipe_id: @recipe[:id], tag_id: find_tag[:id])
                         end
@@ -74,61 +62,6 @@ class RecipesController < ApplicationController
 
         if @recipe
             @recipe.update(recipe_params)
-            @recipe.components = [@recipe.ordered_lists, @recipe.unordered_lists, @recipe.textboxes].flatten
-
-            if !recipe_params[:components].empty?()
-                @recipe.components.map do |og_component|
-                    to_delete = true
-                    recipe_params[:components].map do |new_component|                   
-                        if og_component[:id] == new_component[:id] && og_component[:type] == new_component[:type]
-                            to_delete = false
-                        end
-                    end
-                    if to_delete == true
-                        og_component.destroy
-                    end
-                end
-
-                recipe_params[:components].map do |componentParameters|
-                    case componentParameters["component_type"]
-                    when "ol"
-                        begin
-                            if componentParameters["id"]
-                                component = OrderedList.find(componentParameters["id"])
-                                component.update(title: componentParameters["title"], list_items: componentParameters["list_items"], index_order: componentParameters["index_order"])  
-                            else
-                                OrderedList.create(recipe_id: @recipe[:id], title: componentParameters["title"], list_items: componentParameters["list_items"], index_order: componentParameters["index_order"])
-                            end                     
-                        rescue ActiveRecord::RecordNotUnique
-                            retry
-                        end
-                    when "ul"
-                        begin
-                            if componentParameters["id"]
-                                component = UnorderedList.find(componentParameters["id"])
-                                component.update(title: componentParameters["title"], list_items: componentParameters["list_items"], index_order: componentParameters["index_order"])                         
-                            else
-                                UnorderedList.create(recipe_id: @recipe[:id], title: componentParameters["title"], list_items: componentParameters["list_items"], index_order: componentParameters["index_order"])
-                            end
-                        rescue ActiveRecord::RecordNotUnique
-                            retry
-                        end
-                    when "textbox"
-                        begin
-                            if componentParameters["id"]
-                                component = Textbox.find(componentParameters["id"])
-                                component.update(title: componentParameters["title"], text_content: componentParameters["text_content"], index_order: componentParameters["index_order"])                              
-                            else
-                                Textbox.create(recipe_id: @recipe[:id], title: componentParameters["title"], text_content: componentParameters["text_content"], index_order: componentParameters["index_order"])
-                            end
-                        rescue ActiveRecord::RecordNotUnique
-                            retry
-                        end
-                    else
-                        raise Exception.new "Failed to determine recipe component type."
-                    end            
-                end
-            end
 
             if !recipe_params[:tag_list].empty?
                 # deletes tags if they are missing from original db tag list
@@ -184,61 +117,21 @@ class RecipesController < ApplicationController
         end
     end
 
-    def destroyComponents
-        @recipe = Recipe.find(params[:id])
-
-        if @recipe
-            if !recipe_params[:components].empty?()
-                recipe_params[:components].map do |componentParameters|
-                    if componentParameters["component_type"] === "ol"
-                        component = OrderedList.find(componentParameters["id"])
-                        component.destroy
-                    elsif componentParameters["component_type"] === "ul"
-                        component = UnorderedList.find(componentParameters["id"])
-                        component.destroy
-                    elsif componentParameters["component_type"] === "textbox"
-                        component = Textbox.find(componentParameters["id"])
-                        component.destroy
-                    else
-                        raise Exception.new "Failed to determine recipe component type."
-                    end                
-                end
-
-                render json: {
-                    message: "Recipe compnent(s) successfully deleted"
-                }, status: :ok
-            else
-                render json: {
-                    message: "No recipe component(s) to delete."
-                }, status: :ok
-            end
-        else
-            render json: {
-                error: "Recipe with id of #{@recipe[:id]} not found."
-            }, status: :not_found
-        end
-    end
-
     private
 
     def recipe_params
-        params.require(:recipe).permit(
-            :id,
-            :user_id,
-            :title,
-            :description,
-            components: [
+        params
+            .require(:recipe)
+            .permit(
                 :id,
-                :component_type,
-                :title, 
-                :text_content, 
-                :index_order,
-                list_items: []
-            ],
-            tag_list: [
-                :id,
-                :label
-            ]
-        )
+                :user_id,
+                :title,
+                :description,
+                :bodyText,
+                tag_list: [
+                    :id,
+                    :label
+                ]
+            )
     end
 end
