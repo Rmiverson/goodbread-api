@@ -1,9 +1,5 @@
 class Recipe < ApplicationRecord
-    attr_accessor :components, :tag_list
-
-    has_many :textboxes, :dependent => :destroy
-    has_many :ordered_lists, :dependent => :destroy
-    has_many :unordered_lists, :dependent => :destroy
+    attr_accessor :tag_list
     
     has_many :folders_recipes, :dependent => :destroy
     has_many :folders, through: :folders_recipes, :dependent => :destroy

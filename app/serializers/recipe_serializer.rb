@@ -1,5 +1,5 @@
 class RecipeSerializer < ActiveModel::Serializer
-  attributes :id, :title, :description
+  attributes :id, :title, :description, :bodyText
 
   def initialize (recipe, meta = {})
     @recipe = recipe
@@ -10,15 +10,6 @@ class RecipeSerializer < ActiveModel::Serializer
       include: {
         tags: {
           only: [:id, :label]
-        },
-        ordered_lists: {
-          only: [:id, :title, :list_items, :component_type, :index_order]
-        },
-        unordered_lists: {
-          only: [:id, :title, :list_items, :component_type, :index_order]
-        },
-        textboxes: {
-          only: [:id, :title, :text_content, :component_type, :index_order]
         }
       },
       except: [:created_at, :updated_at]

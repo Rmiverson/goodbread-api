@@ -10,16 +10,9 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_10_24_204303) do
+ActiveRecord::Schema[7.0].define(version: 2022_08_23_183901) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
-
-  create_table "folder_to_folder_joins", force: :cascade do |t|
-    t.integer "parent_folder_id"
-    t.integer "child_folder_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
 
   create_table "folders", force: :cascade do |t|
     t.bigint "user_id", null: false
@@ -38,22 +31,11 @@ ActiveRecord::Schema[7.0].define(version: 2022_10_24_204303) do
     t.index ["recipe_id", "folder_id"], name: "index_folders_recipes_on_recipe_id_and_folder_id", unique: true
   end
 
-  create_table "ordered_lists", force: :cascade do |t|
-    t.bigint "recipe_id", null: false
-    t.string "title"
-    t.string "list_items", array: true
-    t.integer "index_order", null: false
-    t.string "component_type", default: "ol"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["recipe_id"], name: "index_ordered_lists_on_recipe_id"
-  end
-
   create_table "recipes", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.string "title", null: false
     t.text "description"
-    t.string "image"
+    t.text "bodyText"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_recipes_on_user_id"
@@ -73,28 +55,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_10_24_204303) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "textboxes", force: :cascade do |t|
-    t.bigint "recipe_id", null: false
-    t.string "title"
-    t.string "text_content"
-    t.integer "index_order", null: false
-    t.string "component_type", default: "textbox"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["recipe_id"], name: "index_textboxes_on_recipe_id"
-  end
-
-  create_table "unordered_lists", force: :cascade do |t|
-    t.bigint "recipe_id", null: false
-    t.string "title"
-    t.string "list_items", array: true
-    t.integer "index_order", null: false
-    t.string "component_type", default: "ul"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["recipe_id"], name: "index_unordered_lists_on_recipe_id"
-  end
-
   create_table "users", force: :cascade do |t|
     t.string "username", null: false
     t.string "first_name", default: ""
@@ -102,14 +62,10 @@ ActiveRecord::Schema[7.0].define(version: 2022_10_24_204303) do
     t.string "email", null: false
     t.string "password_digest", null: false
     t.text "description", default: ""
-    t.string "user_image"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
   add_foreign_key "folders", "users"
-  add_foreign_key "ordered_lists", "recipes"
   add_foreign_key "recipes", "users"
-  add_foreign_key "textboxes", "recipes"
-  add_foreign_key "unordered_lists", "recipes"
 end
