@@ -14,10 +14,12 @@ Rails.application.routes.draw do
   put '/users/:id', to: 'users#update'
   delete '/users/:id', to: 'users#destroy'
 
+  post '/recipes/search', to: 'recipes#search'
   put '/recipes/:id', to: 'recipes#update'
   delete '/recipes/:id', to: 'recipes#destroy'
   delete '/recipes/:id/components', to: 'recipes#destroyComponents'
 
+  # folders search
   get '/folders/:id/recipes', to: 'folders#show_recipes'
   get '/folders/:id/sub_folders', to: 'folders#show_sub_folders'
   put '/folders/:id', to: 'folders#update'
@@ -26,6 +28,7 @@ Rails.application.routes.draw do
   get '/folders_recipes', to: 'folders_recipes#find_by'
   delete '/folders_recipes/:id', to: 'folders_recipes#destroy'
 
+  # tags search
   put '/tags/:id', to: 'tags#update'
   delete '/tags/:id', to: 'tags#destroy'
 

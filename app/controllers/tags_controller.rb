@@ -77,6 +77,8 @@ class TagsController < ApplicationController
         end
     end
 
+    # tags search
+
     private
 
     def tag_params

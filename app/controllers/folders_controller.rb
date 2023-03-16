@@ -82,6 +82,8 @@ class FoldersController < ApplicationController
         end
     end
 
+    # folders search
+
     private
     
     def folder_params
