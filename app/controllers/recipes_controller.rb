@@ -119,8 +119,7 @@ class RecipesController < ApplicationController
 
     def search
         if params[:query]
-            # think about putting tag search in here VV
-            @recipes = Recipe.select{ |recipe| recipe.title === params[:query] }
+            @recipes = Recipe.select{ |recipe| recipe.title.include? params[:query] }
 
             @paginated = Kaminari.paginate_array(@recipes).page(params[:page]).per(15)
 
@@ -132,9 +131,15 @@ class RecipesController < ApplicationController
                 }, status: :ok
             end
         else
-            render json: {
-                message: "No Results found."
-            }, status: :ok
+            @recipes = Recipe.all.page(params[:page]).per(15)
+
+            if @recipes
+                render json: RecipeSerializer.new(@recipes).serialized_json(meta_attributes(@recipes))
+            else
+                render json: {
+                    error: "Failed to get recipes."
+                }, status: :internal_server_error
+            end
         end
     end
 
