@@ -83,10 +83,46 @@ class FoldersController < ApplicationController
     end
 
     # folders search
+    def search
+        @user = User.find(params[:user_id])
+
+        if @user
+            if params[:query]
+                @folders = @user.folders.select{ |folder| folder.title.include? params[:query] }
+
+                if @folders
+                    @paginated = Kaminari.paginate_array(@folders).page(params[:page]).per(15)
+
+                    render json: FolderSerializer.new(@paginated).serialized_json(meta_attributes(@paginated))
+                else
+                    render json: {
+                        message: "No Results found"
+                    }, status: :ok
+                end
+            else
+                render json: {
+                    error: "Failed to get folders."
+                }, status: :internal_server_error
+            end
+        else
+            render json: {
+                error: "User with id #{params[:id]} not found."
+            }, status: :not_found
+        end
+    end
 
     private
     
     def folder_params
-        params.require(:folder).permit(:id, :user_id, :title, :description, recipe_ids: [])
+        params
+            .require(:folder)
+            .permit(
+                :id,
+                :user_id,
+                :title,
+                :description,
+                :query,
+                recipe_ids: []
+            )
     end
 end

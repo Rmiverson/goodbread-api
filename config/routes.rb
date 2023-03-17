@@ -19,7 +19,7 @@ Rails.application.routes.draw do
   delete '/recipes/:id', to: 'recipes#destroy'
   delete '/recipes/:id/components', to: 'recipes#destroyComponents'
 
-  # folders search
+  post '/folders/search', to: 'folders#search'
   get '/folders/:id/recipes', to: 'folders#show_recipes'
   get '/folders/:id/sub_folders', to: 'folders#show_sub_folders'
   put '/folders/:id', to: 'folders#update'
