@@ -118,28 +118,35 @@ class RecipesController < ApplicationController
     end
 
     def search
-        if params[:query]
-            @recipes = Recipe.select{ |recipe| recipe.title.include? params[:query] }
+        @user = User.find(params[:user_id])
 
-            @paginated = Kaminari.paginate_array(@recipes).page(params[:page]).per(15)
+        if @user
+            if params[:query]
+                @recipes = @user.recipes.select{ |recipe| recipe.title.include? params[:query] }
+                @paginated = Kaminari.paginate_array(@recipes).page(params[:page]).per(15)
 
-            if @recipes
-                render json: RecipeSerializer.new(@paginated).serialized_json(meta_attributes(@paginated))
+                if @recipes
+                    render json: RecipeSerializer.new(@paginated).serialized_json(meta_attributes(@paginated))
+                else
+                    render json: {
+                        message: "No Results found."
+                    }, status: :ok
+                end
             else
-                render json: {
-                    message: "No Results found."
-                }, status: :ok
+                @recipes = @user.recipes.all.page(params[:page]).per(15)
+
+                if @recipes
+                    render json: RecipeSerializer.new(@recipes).serialized_json(meta_attributes(@recipes))
+                else
+                    render json: {
+                        error: "Failed to get recipes."
+                    }, status: :internal_server_error
+                end
             end
         else
-            @recipes = Recipe.all.page(params[:page]).per(15)
-
-            if @recipes
-                render json: RecipeSerializer.new(@recipes).serialized_json(meta_attributes(@recipes))
-            else
-                render json: {
-                    error: "Failed to get recipes."
-                }, status: :internal_server_error
-            end
+            render json: {
+                error: "User with id #{params[:id]} not found."
+            }, status: :not_found
         end
     end
 
