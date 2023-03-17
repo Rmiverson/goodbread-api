@@ -100,9 +100,15 @@ class FoldersController < ApplicationController
                     }, status: :ok
                 end
             else
-                render json: {
-                    error: "Failed to get folders."
-                }, status: :internal_server_error
+                @folders = @user.folders.all.page(params[:page]).per(15)
+
+                if @folders
+                    render json: FolderSerializer.new(@folders).serialized_json(meta_attributes(@folders))
+                else
+                    render json: {
+                        error: "Failed to get folders."
+                    }, status: :internal_server_error                    
+                end
             end
         else
             render json: {
