@@ -11,6 +11,11 @@ class RecipesController < ApplicationController
 
                     if find_tag
                         find_join = RecipesTag.find_by(recipe_id: @recipe[:id], tag_id: find_tag[:id])
+                        find_user_tag = find_tag.users.find(recipe_params[:user_id])
+
+                        if !find_user_tag
+                            TagsUser.create(user_id: recipe_params[:user_id, tag_id: find_tag.id])
+                        end
 
                         if !find_join
                             RecipesTag.create(recipe_id: @recipe[:id], tag_id: find_tag[:id])
@@ -18,7 +23,8 @@ class RecipesController < ApplicationController
                         find_tag
                     else
                         new_tag = Tag.create(label: tag[:label])
-                        RecipesTag.create(recipe_id: @recipe[:id], tag_id: new_tag[:id]) 
+                        RecipesTag.create(recipe_id: @recipe[:id], tag_id: new_tag[:id])
+                        TagsUser.create(user_id: recipe_params[:user_id], tag_id: new_tag[:id])
                         new_tag
                     end
                     find_tag
@@ -76,6 +82,12 @@ class RecipesController < ApplicationController
                     find_tag = Tag.find_by(label: tag[:label])
                     if find_tag
                         find_join = RecipesTag.find_by(recipe_id: @recipe[:id], tag_id: find_tag[:id])
+                        find_user_tag = find_tag.users.find(recipe_params[:user_id])
+
+                        if !find_user_tag
+                            TagsUser.create(user_id: recipe_params[:user_id, tag_id: find_tag.id])
+                        end
+
                         if !find_join
                             RecipesTag.create(recipe_id: @recipe[:id], tag_id: find_tag[:id])
                         end
@@ -83,6 +95,7 @@ class RecipesController < ApplicationController
                     else
                         new_tag = Tag.create(label: tag[:label])
                         RecipesTag.create(recipe_id: @recipe[:id], tag_id: new_tag[:id]) 
+                        TagsUser.create(user_id: recipe_params[:user_id], tag_id: new_tag[:id])
                         new_tag
                     end
                     find_tag
