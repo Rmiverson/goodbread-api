@@ -5,9 +5,9 @@ class UsersController < ApplicationController
         @user = User.create(user_params)
 
         if @user.valid?
-            token = JsonWebToken.encode(user_id: @user.id)
+            @token = generate_token(@user.id)
 
-            render json: UserSerializer.new(@user).serialized_json(token) 
+            render json: UserSerializer.new(@user).serialized_json(@token) 
         else
             render json: {
                 error: "Invalid inputs for signup."
@@ -29,11 +29,10 @@ class UsersController < ApplicationController
 
     def show_folders
         @user = User.find(params[:id])
-
-        folders = @user.folders.page(params[:page]).per(15)
+        @folders = @user.folders.page(params[:page]).per(15)
 
         if @user
-            render json: FolderSerializer.new(folders).serialized_json(meta_attributes(folders))
+            render json: FolderSerializer.new(@folders).serialized_json(meta_attributes(@folders))
         else
             render json: {
                 error: "User with id #{params[:id]} not found."
@@ -43,11 +42,10 @@ class UsersController < ApplicationController
 
     def show_recipes
         @user = User.find(params[:id])
-
-        recipes = @user.recipes.page(params[:page]).per(15)
+        @recipes = @user.recipes.page(params[:page]).per(15)
 
         if @user
-            render json: RecipeSerializer.new(recipes).serialized_json(meta_attributes(recipes))
+            render json: RecipeSerializer.new(@recipes).serialized_json(meta_attributes(@recipes))
         else
             render json: {
                 error: "User with id #{params[:id]} not found."
@@ -57,14 +55,10 @@ class UsersController < ApplicationController
 
     def show
         @user = User.find(params[:id])
-
-        token = JsonWebToken.encode(user_id: @user.id)
-        # redundant to have another exp time sent to the frontend, exp is handled by api 
-        time = Time.now + 24.hours.to_i
-        time_milli = time.to_f * 1000
+        @token = generate_token(@user.id)
 
         if @user
-            render json: UserSerializer.new(@user).serialized_json({token: token, exp: time_milli})
+            render json: UserSerializer.new(@user).serialized_json(@token)
         else
             render json: {
                 error: "User with id #{params[:id]} not found."
@@ -111,6 +105,12 @@ class UsersController < ApplicationController
     end
 
     private
+
+    def generate_token(user_id)
+        @exp_time = Time.now + 72.hours.to_i
+        @token = JsonWebToken.encode(user_id: @user.id, exp: @exp_time)
+        @token
+    end
 
     def find_user
         @user = User.find_by_username!(params[:username])
