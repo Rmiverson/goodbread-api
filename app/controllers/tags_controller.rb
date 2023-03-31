@@ -43,7 +43,7 @@ class TagsController < ApplicationController
     # show recipes within tags
     def show_recipes
         @user = User.find(tag_params[:user_id])
-
+        
         if @user
             @tag = @user.tags.find(params[:id])
             
