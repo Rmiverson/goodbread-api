@@ -4,10 +4,15 @@ class ApplicationController < ActionController::API
    def authorize_request
       headers = request.headers['Authorization']
       header = headers.split(' ').last if !header
-
+      
       begin
          @decoded = JsonWebToken.decode(header)
          @current_user = User.find(@decoded[:user_id])
+         @exp = @decoded[:exp]
+
+         if @exp < Time.now.to_i
+            raise JWT::DecodeError.new(error: "Login Expired.")
+         end
 
       rescue ActiveRecord::RecordNotFound => e
          render json: {

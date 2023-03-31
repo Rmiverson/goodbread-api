@@ -28,7 +28,6 @@ Rails.application.routes.draw do
   get '/folders_recipes', to: 'folders_recipes#find_by'
   delete '/folders_recipes/:id', to: 'folders_recipes#destroy'
 
-  # tags search
   post '/tags/search', to: 'tags#search'
   get '/tags/:id/show_recipes', to: 'tags#show_recipes'
   put '/tags/:id', to: 'tags#update'

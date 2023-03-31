@@ -6,9 +6,8 @@ class UsersController < ApplicationController
 
         if @user.valid?
             token = JsonWebToken.encode(user_id: @user.id)
-            time = Time.now + 24.hours.to_i
-            time_milli = time.to_f * 1000
-            render json: UserSerializer.new(@user).serialized_json({token: token, exp: time_milli}) 
+
+            render json: UserSerializer.new(@user).serialized_json(token) 
         else
             render json: {
                 error: "Invalid inputs for signup."
