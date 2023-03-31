@@ -3,9 +3,7 @@ class User < ApplicationRecord
 
     has_many :folders, :dependent => :destroy
     has_many :recipes, :dependent => :destroy
-
-    has_many :tags_users, :dependent => :destroy
-    has_many :tags, through: :tags_users
+    has_many :tags, :dependent => :destroy
 
     validates :email, presence: true, uniqueness: true
     validates :email, format: { with: URI::MailTo::EMAIL_REGEXP }

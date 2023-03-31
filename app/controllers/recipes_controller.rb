@@ -7,27 +7,25 @@ class RecipesController < ApplicationController
         if @recipe.valid?
             if !recipe_params[:tag_list].empty?
                 recipe_params[:tag_list].map do |tag|
-                    find_tag = Tag.find_by(label: tag[:label])
+                    @tag_search = Tag.find_by(label: tag[:label])
 
-                    if find_tag
-                        find_join = RecipesTag.find_by(recipe_id: @recipe[:id], tag_id: find_tag[:id])
-                        find_user_tag = find_tag.users.find(recipe_params[:user_id])
+                    if @tag_search
+                        @find_join = RecipesTag.find_by(recipe_id: @recipe[:id], tag_id: @tag_search[:id])
 
-                        if !find_user_tag
-                            TagsUser.create(user_id: recipe_params[:user_id, tag_id: find_tag.id])
+                        if !@find_join
+                            RecipesTag.create(recipe_id: @recipe[:id], tag_id: @tag_search[:id])
                         end
 
-                        if !find_join
-                            RecipesTag.create(recipe_id: @recipe[:id], tag_id: find_tag[:id])
-                        end
-                        find_tag
+                        @tag_search
                     else
-                        new_tag = Tag.create(label: tag[:label])
+                        @new_tag = Tag.create(user_id: recipe_params[:user_id], label: tag[:label])
+                        
                         RecipesTag.create(recipe_id: @recipe[:id], tag_id: new_tag[:id])
-                        TagsUser.create(user_id: recipe_params[:user_id], tag_id: new_tag[:id])
-                        new_tag
+                        
+                        @new_tag
                     end
-                    find_tag
+
+                    @tag_search
                 end
             end
 
@@ -79,26 +77,25 @@ class RecipesController < ApplicationController
 
                 # creates new tags if they exist
                 recipe_params[:tag_list].map do |tag|
-                    find_tag = Tag.find_by(label: tag[:label])
-                    if find_tag
-                        find_join = RecipesTag.find_by(recipe_id: @recipe[:id], tag_id: find_tag[:id])
-                        find_user_tag = find_tag.users.find(recipe_params[:user_id])
+                    @find_tag = Tag.find_by(label: tag[:label])
+                    
+                    if @find_tag
+                        @find_join = RecipesTag.find_by(recipe_id: @recipe[:id], tag_id: @find_tag[:id])
 
-                        if !find_user_tag
-                            TagsUser.create(user_id: recipe_params[:user_id, tag_id: find_tag.id])
+                        if !@find_join
+                            RecipesTag.create(recipe_id: @recipe[:id], tag_id: @find_tag[:id])
                         end
-
-                        if !find_join
-                            RecipesTag.create(recipe_id: @recipe[:id], tag_id: find_tag[:id])
-                        end
-                        find_tag
+                        
+                        @find_tag
                     else
-                        new_tag = Tag.create(label: tag[:label])
-                        RecipesTag.create(recipe_id: @recipe[:id], tag_id: new_tag[:id]) 
-                        TagsUser.create(user_id: recipe_params[:user_id], tag_id: new_tag[:id])
-                        new_tag
+                        @new_tag = Tag.create(user_id: recipe_params[:user_id], label: tag[:label])
+                        
+                        RecipesTag.create(recipe_id: @recipe[:id], tag_id: @new_tag[:id]) 
+                        
+                        @new_tag
                     end
-                    find_tag
+                    
+                    @find_tag
                 end
             end
 
