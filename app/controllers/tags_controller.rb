@@ -40,7 +40,7 @@ class TagsController < ApplicationController
         end
     end
 
-    # show recipes within tags
+    # shows recipes related to tags
     def show_recipes
         @user = User.find(tag_params[:user_id])
         
@@ -72,48 +72,81 @@ class TagsController < ApplicationController
     end
 
     # search Tags
-
-    # def update
-    #     @tag = Tag.find(params[:id])
-
-    #     if @tag
-    #         unless @tag.update(tag_params)
-    #             render json: {
-    #                 error: "Could not update tag with id of #{@tag[:id]}."
-    #             }, status: :bad_request
-    #         end
-
-    #         render json: @tag.to_json
-    #     else
-    #         render json: {
-    #             error: "Could not find tag with id of #{@tag[:id]}."
-    #         }, status: :not_found
-    #     end
-    # end
-
-    # def destroy
-    #     @tag = Tag.find(params[:id])
+    def search
+        @user = User.find(tag_params[:user_id])
         
-    #     if @tag
-    #         unless @tag.destroy
-    #             render json: {
-    #                 error: "Could not delete tag with id of #{@tag[:id]}."
-    #             }
-    #         end
+        if @user
+            if tag_params[:query].length > 0
+                @tags = @user.tags.select{ |tag| tag.label.include? tag_params[:query]}
+                
+                if @tags
+                    @paginated = Kaminari.paginate_array(@tags).page(params[:page]).per(15)
 
-    #         render json: {
-    #             message: "Tag successfully deleted."
-    #         }, status: :ok
-    #     else
-    #         render json: {
-    #             error: "Could not find tag with id of #{@tag[:id]}."
-    #         }, status: :not_found
-    #     end
-    # end
+                    render json: TagSerializer.new(@paginated).serialized_json(meta_attributes(@paginated))
+                else
+                    render json: {
+                        message: "No Results found."
+                    }, status: :ok
+                end
+            else
+                @tags = @user.tags.all.page(params[:page]).per(15)
+
+                if @tags
+                    render json: TagSerializer.new(@tags).serialized_json(meta_attributes(@tags))
+                else
+                    render json: {
+                        error: "Failed to get Tags."
+                    }, status: :internal_server_error                    
+                end
+            end
+        else
+            render json: {
+                error: "User with id #{params[:id]} not found."
+            }, status: :not_found
+        end
+    end
+
+    def update
+        @tag = Tag.find(params[:id])
+
+        if @tag
+            unless @tag.update(tag_params)
+                render json: {
+                    error: "Could not update tag with id of #{@tag[:id]}."
+                }, status: :bad_request
+            end
+
+            render json: @tag.to_json
+        else
+            render json: {
+                error: "Could not find tag with id of #{@tag[:id]}."
+            }, status: :not_found
+        end
+    end
+
+    def destroy
+        @tag = Tag.find(params[:id])
+        
+        if @tag
+            unless @tag.destroy
+                render json: {
+                    error: "Could not delete tag with id of #{@tag[:id]}."
+                }
+            end
+
+            render json: {
+                message: "Tag successfully deleted."
+            }, status: :ok
+        else
+            render json: {
+                error: "Could not find tag with id of #{@tag[:id]}."
+            }, status: :not_found
+        end
+    end
 
     private
 
     def tag_params
-        params.require(:tag).permit(:id, :user_id, :label, :page)
+        params.require(:tag).permit(:id, :user_id, :label, :page, :query)
     end
 end
