@@ -10,4 +10,10 @@ class Recipe < ApplicationRecord
     has_many :tags, through: :recipes_tags, :dependent => :destroy
 
     validates_presence_of :user
+
+    before_validation :uppercase
+
+    def uppercase
+        self[:title] = self[:title].humanize
+    end
 end

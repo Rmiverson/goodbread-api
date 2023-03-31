@@ -8,4 +8,10 @@ class Tag < ApplicationRecord
 
     has_many :tags_users, :dependent => :destroy
     has_many :users, through: :tags_users
+
+    before_validation :uppercase
+
+    def uppercase
+        self[:label] = self[:label].humanize
+    end
 end

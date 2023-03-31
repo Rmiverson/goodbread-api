@@ -5,4 +5,10 @@ class Folder < ApplicationRecord
     belongs_to :user
 
     validates_presence_of :user
+
+    before_validation :uppercase
+
+    def uppercase
+        self[:title] = self[:title].humanize
+    end
 end

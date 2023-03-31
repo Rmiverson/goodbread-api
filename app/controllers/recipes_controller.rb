@@ -6,27 +6,7 @@ class RecipesController < ApplicationController
 
         if @recipe.valid?
             if !recipe_params[:tag_list].empty?
-                recipe_params[:tag_list].map do |tag|
-                    @tag_search = Tag.find_by(label: tag[:label])
-
-                    if @tag_search
-                        @find_join = RecipesTag.find_by(recipe_id: @recipe[:id], tag_id: @tag_search[:id])
-
-                        if !@find_join
-                            RecipesTag.create(recipe_id: @recipe[:id], tag_id: @tag_search[:id])
-                        end
-
-                        @tag_search
-                    else
-                        @new_tag = Tag.create(user_id: recipe_params[:user_id], label: tag[:label])
-                        
-                        RecipesTag.create(recipe_id: @recipe[:id], tag_id: new_tag[:id])
-                        
-                        @new_tag
-                    end
-
-                    @tag_search
-                end
+                find_create_tags(recipe_params, @recipe)
             end
 
             render json: RecipeSerializer.new(@recipe).serialized_json
@@ -75,28 +55,7 @@ class RecipesController < ApplicationController
                     end
                 end  
 
-                # creates new tags if they exist
-                recipe_params[:tag_list].map do |tag|
-                    @find_tag = Tag.find_by(label: tag[:label])
-                    
-                    if @find_tag
-                        @find_join = RecipesTag.find_by(recipe_id: @recipe[:id], tag_id: @find_tag[:id])
-
-                        if !@find_join
-                            RecipesTag.create(recipe_id: @recipe[:id], tag_id: @find_tag[:id])
-                        end
-                        
-                        @find_tag
-                    else
-                        @new_tag = Tag.create(user_id: recipe_params[:user_id], label: tag[:label])
-                        
-                        RecipesTag.create(recipe_id: @recipe[:id], tag_id: @new_tag[:id]) 
-                        
-                        @new_tag
-                    end
-                    
-                    @find_tag
-                end
+                find_create_tags(recipe_params, @recipe)
             end
 
             render json: RecipeSerializer.new(@recipe).serialized_json
@@ -161,6 +120,31 @@ class RecipesController < ApplicationController
     end
 
     private
+
+    # Creates tags if they don't exist, adds them to recipe if they already exist
+    def find_create_tags(recipe_params, recipe)
+        recipe_params[:tag_list].map do |tag|
+            @find_tag = Tag.find_by(label: tag[:label])
+            
+            if @find_tag
+                @find_join = RecipesTag.find_by(recipe_id: recipe[:id], tag_id: @find_tag[:id])
+
+                if !@find_join
+                    RecipesTag.create(recipe_id: recipe[:id], tag_id: @find_tag[:id])
+                end
+                
+                @find_tag
+            else
+                @new_tag = Tag.create(user_id: recipe_params[:user_id], label: tag[:label])
+                
+                RecipesTag.create(recipe_id: recipe[:id], tag_id: @new_tag[:id]) 
+                
+                @new_tag
+            end
+            
+            @find_tag
+        end
+    end
 
     def recipe_params
         params
