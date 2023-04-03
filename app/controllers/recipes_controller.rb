@@ -87,11 +87,11 @@ class RecipesController < ApplicationController
     end
 
     def search
-        @user = User.find(params[:user_id])
+        @user = User.find(recipe_params[:user_id])
 
         if @user
-            if params[:query].length > 0
-                @recipes = @user.recipes.select{ |recipe| recipe.title.include? params[:query] }
+            if recipe_params[:query].length > 0
+                @recipes = @user.recipes.select{ |recipe| recipe.title.include? recipe_params[:query] }
                 @paginated = Kaminari.paginate_array(@recipes).page(params[:page]).per(15)
 
                 if @recipes

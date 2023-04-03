@@ -5,3 +5,9 @@
 #
 #   movies = Movie.create([{ name: "Star Wars" }, { name: "Lord of the Rings" }])
 #   Character.create(name: "Luke", movie: movies.first)
+
+
+50.times do |index|
+  @recipe = Recipe.create(user_id: 1, title: "Recipe #{index}", description: "Test Seeds")
+  RecipesTag.create(recipe_id: @recipe.id, tag_id: 1)
+end
