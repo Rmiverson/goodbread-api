@@ -77,7 +77,7 @@ class TagsController < ApplicationController
         
         if @user
             if tag_params[:query].length > 0
-                @tags = @user.tags.select{ |tag| tag.label.include? tag_params[:query]}
+                @tags = @user.tags.select{ |tag| tag.label.downcase.include? tag_params[:query].downcase}
                 
                 if @tags
                     @paginated = Kaminari.paginate_array(@tags).page(params[:page]).per(15)
@@ -105,6 +105,51 @@ class TagsController < ApplicationController
             }, status: :not_found
         end
     end
+
+    # searches recipes associated to specific tag
+    def search_in_tag {
+        @user = User.find(tag_params[:user_id])
+        
+        if @user
+            @tag = @user.tags.find(params[:id])
+            
+            if @tag
+                @recipes = @tag.recipes.select{ |recipe| recipe.user.id === @user.id}
+                
+                if @recipes 
+                    if tag_params[:query].length > 0
+                        @queried_recipes = @recipes.select{ |recipe| recipe.title.downcase.include? tag_params[:query].downcase }
+
+                        if @queried_recipes
+                            @paginated = Kaminari.paginate_array(@queried_recipes).page(params[:page]).per(15)
+
+                            render json: RecipeSerializer.new(@paginated).serialized_json(meta_attributes(@paginated))
+                        else
+                            render json: {
+                                message: "No Results found."
+                            }, status: :ok
+                        end
+                    else
+                        @paginated = Kaminari.paginate_array(@recipes).page(params[:page]).per(15)
+    
+                        render json: RecipeSerializer.new(@paginated).serialized_json(meta_attributes(@paginated))
+                    end
+                else
+                    render json: {
+                        error: "No recipes found by user id #{tag_params[:id]} in tag of id #{params[:id]}"
+                    }
+                end 
+            else
+                render json: {
+                    error: "Could not find tag with id of #{params[:id]} associated with user of #{tag_params[:user_id]}"
+                }
+            end
+        else
+            render json: {
+                error: "Could not find user with id of #{tag_params[:user_id]}"
+            }, status: :not_found
+        end
+    }
 
     def update
         @tag = Tag.find(params[:id])
