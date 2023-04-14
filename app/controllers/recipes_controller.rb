@@ -91,7 +91,7 @@ class RecipesController < ApplicationController
 
         if @user
             if recipe_params[:query].length > 0
-                @recipes = @user.recipes.select{ |recipe| recipe.title.include? recipe_params[:query] }
+                @recipes = @user.recipes.select{ |recipe| recipe.title.downcase.include? recipe_params[:query].downcase }
                 @paginated = Kaminari.paginate_array(@recipes).page(params[:page]).per(15)
 
                 if @recipes
