@@ -84,14 +84,14 @@ class FoldersController < ApplicationController
 
     # folders search
     def search
-        @user = User.find(params[:user_id])
+        @user = User.find(folder_params[:user_id])
 
         if @user
-            if params[:query]
-                @folders = @user.folders.select{ |folder| folder.title.include? params[:query] }
+            if folder_params[:query]
+                @folders = @user.folders.select{ |folder| folder.title.downcase.include? folder_params[:query] }
 
                 if @folders
-                    @paginated = Kaminari.paginate_array(@folders).page(params[:page]).per(15)
+                    @paginated = Kaminari.paginate_array(@folders).page(folder_params[:page]).per(15)
 
                     render json: FolderSerializer.new(@paginated).serialized_json(meta_attributes(@paginated))
                 else
@@ -100,7 +100,7 @@ class FoldersController < ApplicationController
                     }, status: :ok
                 end
             else
-                @folders = @user.folders.all.page(params[:page]).per(15)
+                @folders = @user.folders.all.page(folder_params[:page]).per(15)
 
                 if @folders
                     render json: FolderSerializer.new(@folders).serialized_json(meta_attributes(@folders))
@@ -112,7 +112,7 @@ class FoldersController < ApplicationController
             end
         else
             render json: {
-                error: "User with id #{params[:id]} not found."
+                error: "User with id #{folder_params[:id]} not found."
             }, status: :not_found
         end
     end
