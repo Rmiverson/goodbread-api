@@ -112,7 +112,7 @@ class RecipesController < ApplicationController
                 @recipes = @user.recipes.all.page(params[:page]).per(15)
 
                 if @recipes
-                    render json: RecipeSerializer.new(@recipes).serialized_json(meta_attributes(@recipes))\recipe\16
+                    render json: RecipeSerializer.new(@recipes).serialized_json(meta_attributes(@recipes))
                 else
                     render json: {
                         error: "Failed to get recipes."
