@@ -91,10 +91,17 @@ class RecipesController < ApplicationController
 
         if @user
             if recipe_params[:query].length > 0
+                @tags = @user.tags.select{ |tag| tag.label.downcase.include? recipe_params[:query].downcase }
                 @recipes = @user.recipes.select{ |recipe| recipe.title.downcase.include? recipe_params[:query].downcase }
-                @paginated = Kaminari.paginate_array(@recipes).page(params[:page]).per(15)
+                
+                @tags.each do |tag|
+                    @recipes.concat(tag.recipes)
+                end
 
                 if @recipes
+                    @uniqe_recipes = @recipes.uniq
+                    @paginated = Kaminari.paginate_array(@uniqe_recipes).page(params[:page]).per(15)
+
                     render json: RecipeSerializer.new(@paginated).serialized_json(meta_attributes(@paginated))
                 else
                     render json: {
@@ -105,7 +112,7 @@ class RecipesController < ApplicationController
                 @recipes = @user.recipes.all.page(params[:page]).per(15)
 
                 if @recipes
-                    render json: RecipeSerializer.new(@recipes).serialized_json(meta_attributes(@recipes))
+                    render json: RecipeSerializer.new(@recipes).serialized_json(meta_attributes(@recipes))\recipe\16
                 else
                     render json: {
                         error: "Failed to get recipes."
