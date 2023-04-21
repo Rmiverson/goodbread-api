@@ -131,7 +131,7 @@ class RecipesController < ApplicationController
   # Creates tags if they don't exist, adds them to recipe if they already exist
   def find_create_tags(recipe_params, recipe)
     recipe_params[:tag_list].map do |tag|
-      @find_tag = Tag.find_by(label: tag[:label])
+      @find_tag = Tag.find_by(label: tag[:label].humanize)
       
       if @find_tag
         @find_join = RecipesTag.find_by(recipe_id: recipe[:id], tag_id: @find_tag[:id])
