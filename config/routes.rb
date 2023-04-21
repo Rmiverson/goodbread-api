@@ -30,6 +30,7 @@ Rails.application.routes.draw do
 
   post '/tags/search', to: 'tags#search'
   get '/tags/:id/show_recipes', to: 'tags#show_recipes'
+  post '/tags/:id/recipe_search', to: 'tags#search_in_tag'
   put '/tags/:id', to: 'tags#update'
   delete '/tags/:id', to: 'tags#destroy'
 
