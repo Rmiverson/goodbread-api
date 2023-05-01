@@ -55,7 +55,8 @@ class RecipesController < ApplicationController
 
         if @recipes
           @uniqe_recipes = @recipes.uniq
-          @paginated = Kaminari.paginate_array(@uniqe_recipes).page(params[:page]).per(15)
+          @sorted = sort_arr(@uniqe_recipes, recipe_params[:sort])
+          @paginated = Kaminari.paginate_array(@sorted).page(params[:page]).per(15)
 
           render json: RecipeSerializer.new(@paginated).serialized_json(meta_attributes(@paginated))
         else
@@ -64,10 +65,13 @@ class RecipesController < ApplicationController
           }, status: :ok
         end
       else
-          @recipes = @user.recipes.all.page(params[:page]).per(15)
+          @recipes = @user.recipes.all
 
           if @recipes
-            render json: RecipeSerializer.new(@recipes).serialized_json(meta_attributes(@recipes))
+            @sorted = sort_arr(@recipes, recipe_params[:sort])
+            @paginated = Kaminari.paginate_array(@sorted).page(params[:page]).per(15)
+
+            render json: RecipeSerializer.new(@paginated).serialized_json(meta_attributes(@paginated))
           else
             render json: {
               error: "Failed to get recipes."
@@ -128,6 +132,21 @@ class RecipesController < ApplicationController
 
   private
 
+  def sort_arr(arr, sort)
+    case sort
+    when 'date_asc'
+      arr.sort_by { |recipe| recipe.updated_at }
+    when 'date_des'
+      arr.sort_by { |recipe| recipe.updated_at }.reverse()
+    when 'a_z'
+      arr.sort_by { |recipe| recipe.title }
+    when 'z_a'
+      arr.sort_by { |recipe| recipe.title }.reverse()
+    else
+      arr
+    end
+  end
+
   # Creates tags if they don't exist, adds them to recipe if they already exist
   def find_create_tags(recipe_params, recipe)
     recipe_params[:tag_list].map do |tag|
@@ -163,6 +182,7 @@ class RecipesController < ApplicationController
         :description,
         :bodyText,
         :query,
+        :sort,
         tag_list: [
           :id,
           :label
