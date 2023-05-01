@@ -2,15 +2,13 @@ Rails.application.routes.draw do
   resources :tags, only: [:index, :show, :create]
   resources :folders, only: [:index, :show, :create]
   resources :users, only: [:index, :show]
-  resources :recipes, only: [:index, :show, :create]
+  resources :recipes, only: [:show, :create]
   resources :folders_recipes, only: [:create]
   resources :recipe_tags, only: [:create]
 
   post "/signup", to: "users#create"
   post "/login", to: "auth#login"
 
-  get '/users/:id/folders', to: 'users#show_folders'
-  get '/users/:id/recipes', to: 'users#show_recipes'
   put '/users/:id', to: 'users#update'
   delete '/users/:id', to: 'users#destroy'
 
