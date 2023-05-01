@@ -50,8 +50,9 @@ class TagsController < ApplicationController
       if @tag
         @recipes = @tag.recipes.select{ |recipe| recipe.user.id === @user.id}
 
-        if @recipes 
-          @paginated = Kaminari.paginate_array(@recipes).page(params[:page]).per(15)
+        if @recipes
+          @sorted = sort_recipe(@recipes, tag_params[:sort])
+          @paginated = Kaminari.paginate_array(@sorted).page(params[:page])
 
           render json: RecipeSerializer.new(@paginated).serialized_json(meta_attributes(@paginated))
         else
@@ -80,7 +81,8 @@ class TagsController < ApplicationController
         @tags = @user.tags.select{ |tag| tag.label.downcase.include? tag_params[:query].downcase}
         
         if @tags
-          @paginated = Kaminari.paginate_array(@tags).page(params[:page]).per(15)
+          @sorted = sort_tag(@tags, tag_params[:sort])
+          @paginated = Kaminari.paginate_array(@sorted).page(params[:page])
 
           render json: TagSerializer.new(@paginated).serialized_json(meta_attributes(@paginated))
         else
@@ -89,10 +91,13 @@ class TagsController < ApplicationController
           }, status: :ok
         end
       else
-        @tags = @user.tags.all.page(params[:page]).per(15)
+        @tags = @user.tags.all
 
         if @tags
-          render json: TagSerializer.new(@tags).serialized_json(meta_attributes(@tags))
+          @sorted = sort_tag(@tags, tag_params[:sort])
+          @paginated = Kaminari.paginate_array(@sorted).page(params[:page])
+          
+          render json: TagSerializer.new(@paginated).serialized_json(meta_attributes(@paginated))
         else
           render json: {
             error: "Failed to get Tags."
@@ -121,7 +126,8 @@ class TagsController < ApplicationController
               @queried_recipes = @recipes.select{ |recipe| recipe.title.downcase.include? tag_params[:query].downcase }
 
               if @queried_recipes
-                @paginated = Kaminari.paginate_array(@queried_recipes).page(params[:page]).per(15)
+                @sorted = sort_recipe(@recipes, tag_params[:sort])
+                @paginated = Kaminari.paginate_array(@queried_recipes).page(params[:page])
 
                 render json: RecipeSerializer.new(@paginated).serialized_json(meta_attributes(@paginated))
               else
@@ -130,7 +136,8 @@ class TagsController < ApplicationController
                 }, status: :ok
               end
             else
-              @paginated = Kaminari.paginate_array(@recipes).page(params[:page]).per(15)
+              @sorted = sort_recipe(@recipes, tag_params[:sort])
+              @paginated = Kaminari.paginate_array(@sorted).page(params[:page])
 
               render json: RecipeSerializer.new(@paginated).serialized_json(meta_attributes(@paginated))
             end
@@ -192,6 +199,6 @@ class TagsController < ApplicationController
   private
 
   def tag_params
-    params.require(:tag).permit(:id, :user_id, :label, :page, :query)
+    params.require(:tag).permit(:id, :user_id, :label, :page, :query, :sort)
   end
 end
