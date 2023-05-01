@@ -7,15 +7,15 @@ class UserSerializer < ActiveModel::Serializer
 
   def serialized_json(token = nil)
     options = {
-      include: {
-        recipes: {
-          only: [:id, :title]
-        }, 
-        folders: {
-          only: [:id, :title]
-        }
-      },
-      except: [:password_digest, :created_at, :updated_at]
+      # include: {
+      #   recipes: {
+      #     only: [:id, :title, :updated_at]
+      #   }, 
+      #   folders: {
+      #     only: [:id, :title, :updated_at]
+      #   }
+      # },
+      except: [:password_digest, :updated_at]
     }
     data = @user.to_json(options)
     dataToken = JSON.parse(data)

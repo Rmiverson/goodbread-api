@@ -29,17 +29,17 @@ class RecipesController < ApplicationController
   #   end
   # end
 
-  # def show
-  #   @recipe = Recipe.find(params[:id])
+  def show
+    @recipe = Recipe.find(params[:id])
 
-  #   if @recipe
-  #     render json: RecipeSerializer.new(@recipe).serialized_json
-  #   else
-  #     render json: {
-  #       error: "Recipe with id #{@recipe[:id]} not found."
-  #     }, status: :not_found
-  #   end
-  # end
+    if @recipe
+      render json: RecipeSerializer.new(@recipe).serialized_json
+    else
+      render json: {
+        error: "Recipe with id #{@recipe[:id]} not found."
+      }, status: :not_found
+    end
+  end
 
   def search
     @user = User.find(recipe_params[:user_id])
