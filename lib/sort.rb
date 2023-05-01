@@ -28,4 +28,19 @@ module Sort
       arr.sort_by { |tag| tag.updated_at }
     end
   end
+
+  def sort_folder (arr, sort)
+    case sort
+    when 'date_asc'
+      arr.sort_by { |folder| folder.updated_at }
+    when 'date_des'
+      arr.sort_by { |folder| folder.updated_at }.reverse()
+    when 'a_z'
+      arr.sort_by { |folder| folder.title }
+    when 'z_a'
+      arr.sort_by { |folder| folder.title }.reverse()
+    else
+      arr.sort_by { |folder| folder.updated_at }
+    end
+  end
 end
