@@ -29,7 +29,7 @@ class UsersController < ApplicationController
 
   def show_folders
     @user = User.find(params[:id])
-    @folders = @user.folders.page(params[:page]).per(15)
+    @folders = @user.folders.page(params[:page])
 
     if @user
       render json: FolderSerializer.new(@folders).serialized_json(meta_attributes(@folders))
@@ -42,7 +42,7 @@ class UsersController < ApplicationController
 
   def show_recipes
     @user = User.find(params[:id])
-    @recipes = @user.recipes.page(params[:page]).per(15)
+    @recipes = @user.recipes.page(params[:page])
 
     if @user
       render json: RecipeSerializer.new(@recipes).serialized_json(meta_attributes(@recipes))

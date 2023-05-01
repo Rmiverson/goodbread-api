@@ -18,7 +18,7 @@ class RecipesController < ApplicationController
   end
 
   # def index
-  #   @recipes = Recipe.all.page(params[:page]).per(15)
+  #   @recipes = Recipe.all.page(params[:page])
 
   #   if @recipes
   #     render json: RecipeSerializer.new(@recipes).serialized_json(meta_attributes(@recipes))
@@ -56,7 +56,7 @@ class RecipesController < ApplicationController
         if @recipes
           @uniqe_recipes = @recipes.uniq
           @sorted = sort_recipe(@uniqe_recipes, recipe_params[:sort])
-          @paginated = Kaminari.paginate_array(@sorted).page(params[:page]).per(15)
+          @paginated = Kaminari.paginate_array(@sorted).page(params[:page])
 
           render json: RecipeSerializer.new(@paginated).serialized_json(meta_attributes(@paginated))
         else
@@ -69,7 +69,7 @@ class RecipesController < ApplicationController
 
           if @recipes
             @sorted = sort_recipe(@recipes, recipe_params[:sort])
-            @paginated = Kaminari.paginate_array(@sorted).page(params[:page]).per(15)
+            @paginated = Kaminari.paginate_array(@sorted).page(params[:page])
 
             render json: RecipeSerializer.new(@paginated).serialized_json(meta_attributes(@paginated))
           else
