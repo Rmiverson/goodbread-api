@@ -1,7 +1,7 @@
 class FoldersRecipe < ApplicationRecord
-    belongs_to :recipe
-    belongs_to :folder
+  belongs_to :recipe
+  belongs_to :folder
 
-    validates_presence_of :recipe
-    validates_presence_of :folder
+  validates_presence_of :recipe
+  validates_presence_of :folder
 end
