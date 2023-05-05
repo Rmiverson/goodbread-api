@@ -12,3 +12,5 @@ GoodBread is recipe web application that aims to be the home for your recipes th
 * BCrypt Encryption
 * Kaminari Pagination Handling
 * Model Serialization
+
+Frontend information: [Here](https://github.com/Rmiverson/goodbread)
