@@ -9,10 +9,10 @@ class TagSerializer < ActiveModel::Serializer
     options = {
       include: {
         recipes: {
-          only: [:id, :title]
+          only: [:id, :title, :updated_at]
         }
       },
-      except: [:created_at, :updated_at]
+      except: [:created_at]
     }
     data = JSON.parse(@tag.to_json(options))
     dataWithMeta = {data: data, meta: meta}

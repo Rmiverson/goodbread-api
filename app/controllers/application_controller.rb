@@ -1,5 +1,6 @@
 class ApplicationController < ActionController::API
   include Error::ErrorHandler
+  include Sort
 
   def authorize_request
     headers = request.headers['Authorization']

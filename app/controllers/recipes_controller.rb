@@ -17,17 +17,17 @@ class RecipesController < ApplicationController
     end
   end
 
-  def index
-    @recipes = Recipe.all.page(params[:page]).per(15)
+  # def index
+  #   @recipes = Recipe.all.page(params[:page])
 
-    if @recipes
-      render json: RecipeSerializer.new(@recipes).serialized_json(meta_attributes(@recipes))
-    else
-      render json: {
-        error: "Failed to get recipes."
-      }, status: :internal_server_error
-    end
-  end
+  #   if @recipes
+  #     render json: RecipeSerializer.new(@recipes).serialized_json(meta_attributes(@recipes))
+  #   else
+  #     render json: {
+  #       error: "Failed to get recipes."
+  #     }, status: :internal_server_error
+  #   end
+  # end
 
   def show
     @recipe = Recipe.find(params[:id])
@@ -37,6 +37,50 @@ class RecipesController < ApplicationController
     else
       render json: {
         error: "Recipe with id #{@recipe[:id]} not found."
+      }, status: :not_found
+    end
+  end
+
+  def search
+    @user = User.find(recipe_params[:user_id])
+
+    if @user
+      if recipe_params[:query].length > 0
+        @tags = @user.tags.select{ |tag| tag.label.downcase.include? recipe_params[:query].downcase }
+        @recipes = @user.recipes.select{ |recipe| recipe.title.downcase.include? recipe_params[:query].downcase }
+        
+        @tags.each do |tag|
+          @recipes.concat(tag.recipes)
+        end
+
+        if @recipes
+          @uniqe_recipes = @recipes.uniq
+          @sorted = sort_recipe(@uniqe_recipes, recipe_params[:sort])
+          @paginated = Kaminari.paginate_array(@sorted).page(params[:page])
+
+          render json: RecipeSerializer.new(@paginated).serialized_json(meta_attributes(@paginated))
+        else
+          render json: {
+            message: "No Results found."
+          }, status: :ok
+        end
+      else
+          @recipes = @user.recipes.all
+
+          if @recipes
+            @sorted = sort_recipe(@recipes, recipe_params[:sort])
+            @paginated = Kaminari.paginate_array(@sorted).page(params[:page])
+
+            render json: RecipeSerializer.new(@paginated).serialized_json(meta_attributes(@paginated))
+          else
+            render json: {
+              error: "Failed to get recipes."
+            }, status: :internal_server_error
+          end
+      end
+    else
+      render json: {
+        error: "User with id #{params[:id]} not found."
       }, status: :not_found
     end
   end
@@ -86,46 +130,6 @@ class RecipesController < ApplicationController
     end
   end
 
-  def search
-    @user = User.find(recipe_params[:user_id])
-
-    if @user
-      if recipe_params[:query].length > 0
-        @tags = @user.tags.select{ |tag| tag.label.downcase.include? recipe_params[:query].downcase }
-        @recipes = @user.recipes.select{ |recipe| recipe.title.downcase.include? recipe_params[:query].downcase }
-        
-        @tags.each do |tag|
-          @recipes.concat(tag.recipes)
-        end
-
-        if @recipes
-          @uniqe_recipes = @recipes.uniq
-          @paginated = Kaminari.paginate_array(@uniqe_recipes).page(params[:page]).per(15)
-
-          render json: RecipeSerializer.new(@paginated).serialized_json(meta_attributes(@paginated))
-        else
-          render json: {
-            message: "No Results found."
-          }, status: :ok
-        end
-      else
-          @recipes = @user.recipes.all.page(params[:page]).per(15)
-
-          if @recipes
-            render json: RecipeSerializer.new(@recipes).serialized_json(meta_attributes(@recipes))
-          else
-            render json: {
-              error: "Failed to get recipes."
-            }, status: :internal_server_error
-          end
-      end
-    else
-      render json: {
-        error: "User with id #{params[:id]} not found."
-      }, status: :not_found
-    end
-  end
-
   private
 
   # Creates tags if they don't exist, adds them to recipe if they already exist
@@ -163,6 +167,7 @@ class RecipesController < ApplicationController
         :description,
         :bodyText,
         :query,
+        :sort,
         tag_list: [
           :id,
           :label
