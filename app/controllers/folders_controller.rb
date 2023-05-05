@@ -59,8 +59,8 @@ class FoldersController < ApplicationController
       @recipes = @folder.recipes
 
       if @recipes
-        @sorted = sort_recipe(@recipes, folder_params[:sort])
-        @paginated = Kaminari.paginate_array(@sorted).page(folder_params[:page])
+        @sorted = sort_recipe(@recipes, params[:sort])
+        @paginated = Kaminari.paginate_array(@sorted).page(params[:page])
 
         render json: RecipeSerializer.new(@paginated).serialized_json(meta_attributes(@paginated))
       else
